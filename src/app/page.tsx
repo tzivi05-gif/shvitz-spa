@@ -569,6 +569,7 @@ export default function Home() {
           contactLocation={contactLocation}
           whatsappLink={whatsappLink}
           onClose={handleGiveawayClose}
+          onNavClick={handleNavClick}
         />
 
         <Pricing tiers={tiers} onNavClick={handleNavClick} />

@@ -176,6 +176,7 @@ export default function ContactForm({
                 <select
                   id="treatment"
                   name="treatment"
+                  required
                   autoComplete="off"
                   defaultValue=""
                   className="field-base select-field mt-2 w-full rounded-2xl border border-accent-soft bg-[#FFFBF7] px-4 py-3 text-sm text-[#2B211C] outline-none focus:border-accent"
