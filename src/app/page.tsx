@@ -19,7 +19,7 @@ const services = [
       "Reset your system with invigorating cold immersion therapy.",
   },
   {
-    title: "Inground Jacuzzi",
+    title: "Jacuzzi",
     description: "Soak in warmth and let stress dissolve.",
   },
   {
@@ -165,6 +165,7 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [showGiveaway, setShowGiveaway] = useState(false);
   const [formStatus, setFormStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
@@ -196,6 +197,20 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const storageKey = "shvitz-giveaway-dismissed";
+    if (window.localStorage.getItem(storageKey)) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setShowGiveaway(true);
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (selectedImage) {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
@@ -220,13 +235,26 @@ export default function Home() {
     return;
   }, [selectedImage]);
 
+  const handleGiveawayClose = () => {
+    setShowGiveaway(false);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("shvitz-giveaway-dismissed", "true");
+    }
+  };
+
+  const contactPhoneDial = contactPhone.replace(/[^0-9+]/g, "");
+  const whatsappLink = `https://wa.me/${contactPhoneDial.replace("+", "")}`;
+
   const handleNavClick = (
     event: MouseEvent<HTMLAnchorElement>,
     targetId: string
   ) => {
     event.preventDefault();
     if (targetId === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const scrollOptions: ScrollToOptions = { top: 0, left: 0, behavior: "smooth" };
+      document.documentElement.scrollTo(scrollOptions);
+      document.body.scrollTo(scrollOptions);
+      window.scrollTo(scrollOptions);
       return;
     }
     document
@@ -390,7 +418,7 @@ export default function Home() {
             </div>
             <div className="relative z-10 order-1 flex-1">
               <div className="flex h-full items-start justify-center pt-6 md:justify-end md:pt-10">
-                <div className="hero-image-shell relative w-full max-w-md overflow-hidden border border-white/70 bg-white/60 shadow-[0_12px_36px_rgba(43,33,28,0.14)] backdrop-blur md:max-w-lg">
+                <div className="hero-image-shell relative w-full max-w-md overflow-hidden bg-white/60 shadow-[0_12px_36px_rgba(43,33,28,0.14)] backdrop-blur md:max-w-lg">
                   <Image
                     src={gallery[0].src}
                     alt={gallery[0].alt}
@@ -402,9 +430,6 @@ export default function Home() {
                     sizes="(min-width: 1280px) 520px, (min-width: 768px) 50vw, 100vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-black/0 to-black/0" />
-                  <div className="absolute left-6 top-6 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.14em] text-accent shadow-lg backdrop-blur">
-                    Calm
-                  </div>
                 </div>
               </div>
             </div>
@@ -513,6 +538,9 @@ export default function Home() {
                 </button>
               ))}
             </div>
+            <p className="mt-6 text-xs text-slate-500">
+              Some images in this gallery are AI-generated.
+            </p>
           </div>
         </section>
 
@@ -550,6 +578,75 @@ export default function Home() {
                     }`}
                     sizes="90vw"
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {showGiveaway ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B211C]/55 px-6 py-10 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Giveaway announcement"
+          >
+            <div className="relative w-full max-w-2xl overflow-hidden rounded-[32px] border border-accent-soft bg-[#FDF7F1] shadow-[0_30px_90px_rgba(25,18,14,0.35)]">
+              <button
+                type="button"
+                onClick={handleGiveawayClose}
+                className="absolute right-5 top-5 rounded-full border border-accent bg-white px-3 py-1 text-xs uppercase tracking-[0.18em] text-[#2B211C] hover-border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                aria-label="Close giveaway popup"
+              >
+                Close
+              </button>
+              <div className="grid gap-6 px-8 pb-8 pt-12 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+                <div className="space-y-4">
+                  <p className="text-xs uppercase tracking-[0.24em] text-accent">
+                    The Shvitz
+                  </p>
+                  <h2 className="hero-serif text-2xl text-[#2B211C] md:text-3xl">
+                    The Shvitz is doing an exciting giveaway!
+                  </h2>
+                  <p className="text-sm text-slate-600">
+                    A VIP night for you and 5 friends.
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    Includes a professional bezem massage for each, drinks, &amp;
+                    hookah.
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    Repost this on your status, as well as our WhatsApp link and
+                    get an entry into the giveaway raffle for every 50 views!
+                  </p>
+                </div>
+                <div className="space-y-4 rounded-3xl border border-accent-soft bg-white/90 p-6">
+                  <p className="text-lg font-semibold text-slate-700">
+                    Let&apos;s get Shvitzing!
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    Call us: {contactPhone}
+                  </p>
+                  <p className="text-sm text-slate-600">
+                    {contactLocation} 10952
+                  </p>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <a
+                      className="button-secondary text-xs uppercase tracking-[0.14em] text-accent"
+                      href="#contact"
+                      onClick={handleGiveawayClose}
+                    >
+                      Contact form
+                    </a>
+                    <a
+                      className="button-secondary text-xs uppercase tracking-[0.14em] text-accent"
+                      href={whatsappLink}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      WhatsApp link
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -702,10 +799,10 @@ export default function Home() {
                 onSubmit={handleContactSubmit}
               >
                 <div className="honeypot" aria-hidden="true">
-                  <label htmlFor="company">Company</label>
+                  <label htmlFor="company-field">Company</label>
                   <input
-                    id="company"
-                    name="company"
+                    id="company-field"
+                    name="company_field"
                     type="text"
                     tabIndex={-1}
                     autoComplete="off"
@@ -802,7 +899,7 @@ export default function Home() {
                   {formMessage}
                 </p>
                 <p className="mt-4 text-xs text-slate-500">
-                  Prefer to call? Dial {contactPhone}. Email {contactEmail}
+                  Prefer to call? Dial {contactPhone}. Email {contactEmail}.
                 </p>
               </form>
             </div>

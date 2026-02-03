@@ -2,7 +2,8 @@ import { Resend } from "resend";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const contactTo = process.env.CONTACT_TO;
-const contactFrom = process.env.CONTACT_FROM || "Shvitz <onboarding@resend.dev>";
+const contactFrom =
+  process.env.CONTACT_FROM || "Shvitz <hello@theshvitz.com>";
 
 const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 const escapeHtml = (value: string) =>
@@ -26,7 +27,9 @@ export async function POST(request: Request) {
   const email = String(payload?.email || "").trim();
   const treatment = String(payload?.treatment || "").trim();
   const notes = String(payload?.notes || "").trim();
-  const company = String(payload?.company || "").trim();
+  const company = String(
+    payload?.company_field || payload?.company || ""
+  ).trim();
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safeTreatment = escapeHtml(treatment || "Not specified");

@@ -42,7 +42,7 @@ body.modal-open {
 }
 
 html {
-  scroll-padding-top: 92px;
+  scroll-padding-top: 0;
 }
 
 main {
