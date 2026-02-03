@@ -18,6 +18,34 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Contact Form Email Setup
+
+The contact form sends email using Resend. Create a `.env.local` file in the
+project root (or edit the existing one) with:
+
+```
+RESEND_API_KEY=your_resend_api_key
+CONTACT_TO=your_inbox@example.com
+CONTACT_FROM=Shvitz <onboarding@resend.dev>
+```
+
+For a professional sender, verify your domain in Resend and set `CONTACT_FROM`
+to a verified address like `Shvitz <hello@yourdomain.com>`.
+
+## Deployment (Vercel)
+
+Add the same environment variables in Vercel:
+
+- `RESEND_API_KEY`
+- `CONTACT_TO`
+- `CONTACT_FROM`
+
+Then redeploy to apply the changes.
+
+Quick path in Vercel: Project → Settings → Environment Variables
+Add the three keys for Production (and Preview if you want staging emails).
+Docs: https://vercel.com/docs/projects/environment-variables
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

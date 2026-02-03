@@ -1,0 +1,31 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="120" fill="url(#bg)"/>
+  <g filter="url(#blur)">
+    <path d="M212 238C292 148 458 118 588 176C718 234 792 364 734 456C676 548 510 606 378 556C246 506 132 328 212 238Z" fill="url(#mist)"/>
+    <path d="M798 258C910 196 1076 208 1130 302C1184 396 1118 520 996 568C874 616 716 580 672 486C628 392 686 320 798 258Z" fill="url(#glow)"/>
+    <path d="M262 640C340 580 480 560 610 604C740 648 816 728 772 786C728 844 584 846 452 802C320 758 184 700 262 640Z" fill="url(#tide)"/>
+  </g>
+  <rect x="96" y="96" width="1008" height="708" rx="96" stroke="white" stroke-opacity="0.5" stroke-width="2"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9F3EC"/>
+      <stop offset="0.55" stop-color="#F2E6DC"/>
+      <stop offset="1" stop-color="#EEF1F4"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="212" y1="176" x2="720" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCE8F0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F3E4D8" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="672" y1="238" x2="1140" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7E3D5" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#D6E7F2" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="tide" x1="262" y1="600" x2="772" y2="840" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E7F0F7" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F0DCCB" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="blur" x="-120" y="-120" width="1440" height="1140" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+</svg>

@@ -1,0 +1,31 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="120" fill="url(#bg)"/>
+  <g filter="url(#blur)">
+    <path d="M140 260C260 160 440 130 580 200C720 270 790 420 720 520C650 620 470 650 320 580C170 510 20 360 140 260Z" fill="url(#veil)"/>
+    <path d="M760 240C900 170 1060 200 1120 320C1180 440 1080 560 940 600C800 640 660 560 620 440C580 320 620 310 760 240Z" fill="url(#ember)"/>
+    <path d="M260 660C340 610 480 590 620 630C760 670 840 760 780 820C720 880 560 880 420 830C280 780 180 710 260 660Z" fill="url(#drift)"/>
+  </g>
+  <rect x="110" y="110" width="980" height="680" rx="92" stroke="white" stroke-opacity="0.45" stroke-width="2"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6F1EB"/>
+      <stop offset="0.55" stop-color="#EFE2D7"/>
+      <stop offset="1" stop-color="#E7EEF4"/>
+    </linearGradient>
+    <linearGradient id="veil" x1="140" y1="200" x2="720" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D7E6F2" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F3E2D6" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="620" y1="220" x2="1120" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4D6C6" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#D3E3EE" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="drift" x1="260" y1="620" x2="780" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E2EDF6" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#EFD7C6" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="blur" x="-120" y="-120" width="1440" height="1140" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+</svg>
