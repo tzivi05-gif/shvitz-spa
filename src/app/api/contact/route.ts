@@ -8,6 +8,36 @@ const fromAddress =
   process.env.NODE_ENV === "production" ? contactFrom : fallbackFrom;
 
 const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_TREATMENT_LENGTH = 60;
+const MAX_NOTES_LENGTH = 2000;
+const MAX_COMPANY_LENGTH = 120;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX = 5;
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+const getClientIp = (request: Request) => {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0]?.trim() || "unknown";
+  }
+  return request.headers.get("x-real-ip") || "unknown";
+};
+
+const isRateLimited = (key: string) => {
+  const now = Date.now();
+  const bucket = rateLimitBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  if (bucket.count >= RATE_LIMIT_MAX) {
+    return true;
+  }
+  bucket.count += 1;
+  return false;
+};
 const escapeHtml = (value: string) =>
   value
     .replaceAll("&", "&amp;")
@@ -21,6 +51,14 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "Email service is not configured." },
       { status: 500 }
+    );
+  }
+
+  const clientKey = getClientIp(request);
+  if (isRateLimited(clientKey)) {
+    return Response.json(
+      { error: "Too many requests. Please try again soon." },
+      { status: 429 }
     );
   }
 
@@ -40,6 +78,19 @@ export async function POST(request: Request) {
   if (!name || !email || !isValidEmail(email)) {
     return Response.json(
       { error: "Please provide a valid name and email." },
+      { status: 400 }
+    );
+  }
+
+  if (
+    name.length > MAX_NAME_LENGTH ||
+    email.length > MAX_EMAIL_LENGTH ||
+    treatment.length > MAX_TREATMENT_LENGTH ||
+    notes.length > MAX_NOTES_LENGTH ||
+    company.length > MAX_COMPANY_LENGTH
+  ) {
+    return Response.json(
+      { error: "Please shorten one or more fields and try again." },
       { status: 400 }
     );
   }

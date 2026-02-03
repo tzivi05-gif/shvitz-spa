@@ -201,8 +201,12 @@ export default function Home() {
       return;
     }
     const storageKey = "shvitz-giveaway-dismissed";
-    if (window.localStorage.getItem(storageKey)) {
-      return;
+    try {
+      if (window.localStorage.getItem(storageKey)) {
+        return;
+      }
+    } catch {
+      // Ignore storage access errors (private mode or disabled storage).
     }
     const timer = window.setTimeout(() => {
       setShowGiveaway(true);
@@ -230,15 +234,16 @@ export default function Home() {
         window.removeEventListener("keydown", handleKeyDown);
       };
     }
-
-    document.body.classList.remove("modal-open");
-    return;
   }, [selectedImage]);
 
   const handleGiveawayClose = () => {
     setShowGiveaway(false);
     if (typeof window !== "undefined") {
-      window.localStorage.setItem("shvitz-giveaway-dismissed", "true");
+      try {
+        window.localStorage.setItem("shvitz-giveaway-dismissed", "true");
+      } catch {
+        // Ignore storage access errors (private mode or disabled storage).
+      }
     }
   };
 
@@ -271,9 +276,9 @@ export default function Home() {
     const formData = new FormData(event.currentTarget);
     const name = String(formData.get("name") || "").trim();
     const email = String(formData.get("email") || "").trim();
-    const treatment = String(formData.get("budget") || "").trim();
+    const treatment = String(formData.get("treatment") || "").trim();
     const notes = String(formData.get("message") || "").trim();
-    const company = String(formData.get("company") || "").trim();
+    const company = String(formData.get("company_field") || "").trim();
     setFormStatus("sending");
     setFormMessage("");
 
@@ -286,7 +291,7 @@ export default function Home() {
           email,
           treatment,
           notes,
-          company,
+          company_field: company,
         }),
       });
 
@@ -377,7 +382,11 @@ export default function Home() {
             </filter>
           </defs>
         </svg>
-        <section className="hero-glow relative overflow-hidden">
+        <section
+          className={`hero-glow relative overflow-hidden transition-opacity duration-300 ${
+            showGiveaway ? "opacity-30" : "opacity-100"
+          }`}
+        >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.92),transparent_60%)]" />
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-20 xl:flex-row xl:items-center">
             <div className="relative z-10 order-2 flex-1">
@@ -586,7 +595,7 @@ export default function Home() {
 
         {showGiveaway ? (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B211C]/55 px-6 py-10 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
             role="dialog"
             aria-modal="true"
             aria-label="Giveaway announcement"
@@ -845,13 +854,13 @@ export default function Home() {
                   <div>
                     <label
                       className="text-[0.65rem] uppercase tracking-[0.22em] text-slate-500"
-                      htmlFor="budget"
+                      htmlFor="treatment"
                     >
                       Preferred treatment
                     </label>
                     <select
-                      id="budget"
-                      name="budget"
+                      id="treatment"
+                      name="treatment"
                       autoComplete="off"
                       defaultValue=""
                       className="field-base select-field mt-2 w-full rounded-2xl border border-accent-soft bg-[#FFFBF7] px-4 py-3 text-sm text-[#2B211C] outline-none focus:border-accent"
