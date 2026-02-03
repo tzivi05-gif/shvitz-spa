@@ -71,16 +71,6 @@ const extraGallery: GalleryItem[] = [
     modalClass: "scale-[1.04]",
   },
   {
-    src: "/images/shvitz-03.jpg",
-    alt: "Textured steam room with calming tones.",
-    modalClass: "scale-[1.04]",
-  },
-  {
-    src: "/images/shvitz-04.jpg",
-    alt: "Quiet soaking area with warm finishes.",
-    modalClass: "scale-[1.04]",
-  },
-  {
     src: "/images/shvitz-05.jpg",
     alt: "Relaxation seating with textured finishes.",
     modalClass: "scale-[1.04]",
