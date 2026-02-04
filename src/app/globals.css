@@ -28,8 +28,6 @@ body {
   line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
   letter-spacing: -0.006em;
   font-weight: 400;
   font-optical-sizing: auto;
@@ -43,6 +41,7 @@ body.modal-open {
 
 html {
   scroll-padding-top: 0;
+  scroll-behavior: smooth;
 }
 
 main {
@@ -195,7 +194,7 @@ p {
 .water-background {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible;
   --page-hero-image: url("/images/shvitz-calm-1.jpg");
 }
 
