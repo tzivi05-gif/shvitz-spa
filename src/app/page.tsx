@@ -4,7 +4,6 @@ import Image from "next/image";
 import {
   useCallback,
   useEffect,
-  useRef,
   useState,
   type FormEvent,
   type MouseEvent,
@@ -33,10 +32,10 @@ const gallery: GalleryItem[] = [
 ];
 
 const extraGallery: GalleryItem[] = [
-  { src: "/images/shvitz-01.jpg", alt: "Warm stone sauna with soft glow.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-02.jpg", alt: "Spa corridor with ambient lighting.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-05.jpg", alt: "Relaxation seating with textured finishes.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-06.jpg", alt: "Quiet lounge with warm tones.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-07.jpg", alt: "Fresh towel stacks by the changing area.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-08.jpg", alt: "Refreshment bar with coffee and snacks.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-09.jpg", alt: "Sauna heater with warm cedar seating.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-10.jpg", alt: "Cold plunge entry with marble walls.", modalClass: "scale-[1.04]" },
 ];
 
 const tiers: Tier[] = [
@@ -88,13 +87,10 @@ const contactDetails: ContactDetail[] = [
 // -------------------- Component --------------------
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
-  const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [showGiveaway, setShowGiveaway] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [formMessage, setFormMessage] = useState("");
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  const isModalOpen = Boolean(selectedImage) || showGiveaway;
+  const isModalOpen = showGiveaway;
 
   // -------------------- Scroll Handling --------------------
   const scrollToSection = useCallback((targetId: string) => {
@@ -123,13 +119,8 @@ export default function Home() {
     if (selectedImage) {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") setSelectedImage(null);
-        if (event.key === "Tab") {
-          event.preventDefault();
-          closeButtonRef.current?.focus();
-        }
       };
       window.addEventListener("keydown", handleKeyDown);
-      closeButtonRef.current?.focus();
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
   }, [selectedImage]);
@@ -192,9 +183,15 @@ export default function Home() {
   };
 
   // -------------------- Displayed Gallery --------------------
-  const displayedGallery = showAllPhotos ? [...gallery, ...extraGallery] : gallery;
   const contactPhoneDial = contactPhone.replace(/[^0-9+]/g, "");
   const whatsappLink = `https://wa.me/${contactPhoneDial.replace("+", "")}`;
+  const handleSelectImage = useCallback(
+    (image: GalleryItem) => {
+      setSelectedImage(image);
+      scrollToSection("top");
+    },
+    [scrollToSection],
+  );
 
   // -------------------- JSX --------------------
   return (
@@ -232,7 +229,41 @@ export default function Home() {
 
       {/* Main Content */}
       <main>
-        <Hero showGiveaway={showGiveaway} heroImage={gallery[0]} onNavClick={handleNavClick} />
+        {selectedImage && (
+          <section className="section-block pb-0">
+            <div className="section-shell mx-auto w-full max-w-6xl">
+              <div className="surface-card relative overflow-hidden rounded-[2.5rem] border border-accent-soft bg-white/80 p-4 shadow-[0_20px_55px_rgba(53,66,77,0.12)] sm:p-6">
+                <button
+                  type="button"
+                  onClick={() => setSelectedImage(null)}
+                  className="absolute right-4 top-4 z-10 rounded-full border border-accent bg-white px-3 py-1 text-xs uppercase tracking-[0.14em] text-[#2B211C] hover-border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Close
+                </button>
+                <div className="overflow-hidden rounded-[2rem]">
+                  <Image
+                    key={selectedImage.src}
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    width={1600}
+                    height={1000}
+                    className="h-[50vh] w-full object-cover sm:h-[60vh]"
+                    sizes="100vw"
+                    priority
+                  />
+                </div>
+                <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
+                  {selectedImage.alt}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+        <Hero
+          showGiveaway={showGiveaway}
+          heroImage={gallery[0]}
+          onNavClick={handleNavClick}
+        />
         <section id="about" className="section-block">
           <div className="section-shell mx-auto w-full max-w-6xl">
             <p className="section-label">About</p>
@@ -264,40 +295,10 @@ export default function Home() {
         </section>
 
         <Gallery
-          displayedGallery={displayedGallery}
-          showAllPhotos={showAllPhotos}
-          onToggleShowAll={() => setShowAllPhotos((prev) => !prev)}
-          onSelectImage={setSelectedImage}
+          gallery={gallery}
+          extraGallery={extraGallery}
+          onSelectImage={handleSelectImage}
         />
-
-        {/* Selected Image Modal */}
-        {selectedImage && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Expanded gallery image" onClick={() => setSelectedImage(null)}>
-            <div className="relative h-full w-full max-w-none bg-transparent px-6 py-10 sm:px-10" onClick={(e) => e.stopPropagation()}>
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={() => setSelectedImage(null)}
-                className="absolute right-6 top-6 rounded-full border border-accent bg-white px-3 py-1 text-sm text-[#2B211C] hover-border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                Close
-              </button>
-              <div className="flex h-full items-center justify-center">
-                <div className="overflow-hidden rounded-3xl shadow-[0_18px_50px_rgba(14,20,25,0.35)]">
-                  <Image
-                    key={selectedImage.src}
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    width={1200}
-                    height={900}
-                    className={`max-h-[85vh] w-auto max-w-[90vw] object-contain ${selectedImage.modalClass ?? ""}`}
-                    sizes="90vw"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         <GiveawayModal show={showGiveaway} contactPhone={contactPhone} contactLocation={contactLocation} whatsappLink={whatsappLink} onClose={handleGiveawayClose} onNavClick={handleNavClick} />
         <Pricing tiers={tiers} onNavClick={handleNavClick} />

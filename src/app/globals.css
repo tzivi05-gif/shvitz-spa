@@ -194,7 +194,7 @@ p {
 .water-background {
   position: relative;
   isolation: isolate;
-  overflow: visible;
+  overflow: hidden;
   --page-hero-image: url("/images/shvitz-calm-1.jpg");
 }
 
@@ -362,6 +362,27 @@ p {
 .gallery-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 16px 36px rgba(45, 35, 31, 0.12);
+}
+
+.gallery-details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.gallery-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.gallery-details .details-open {
+  display: none;
+}
+
+.gallery-details[open] .details-open {
+  display: inline;
+}
+
+.gallery-details[open] .details-closed {
+  display: none;
 }
 
 .button-primary,
