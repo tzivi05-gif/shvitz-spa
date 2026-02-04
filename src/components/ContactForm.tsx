@@ -1,10 +1,10 @@
-import type { FormEvent } from "react";
+import type { FormEvent, ReactNode } from "react";
 
 export type ContactDetail = {
   label: string;
   value: string;
   href?: string;
-  icon: JSX.Element;
+  icon: ReactNode;
 };
 
 type ContactFormProps = {
