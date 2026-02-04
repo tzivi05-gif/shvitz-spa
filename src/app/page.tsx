@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import ContactForm, { type ContactDetail } from "../components/ContactForm";
 import Gallery, { type GalleryItem } from "../components/Gallery";
 import Hero from "../components/Hero";
@@ -184,25 +184,18 @@ export default function Home() {
   }, []);
 
   // -------------------- JSX --------------------
-  const [menuOpen, setMenuOpen] = useState(false);
+  const menuDetailsRef = useRef<HTMLDetailsElement>(null);
 
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
+  const closeMenu = useCallback(() => {
+    menuDetailsRef.current?.removeAttribute("open");
+  }, []);
 
   return (
     <div className="bg-[#F8F1E9] text-[#2B211C]">
       <span id="top" className="block h-0 w-0" />
 
-      {/* Header */}
-      <header className="site-header sticky top-0 z-40 border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
+      {/* Header — z-50 so nothing covers the hamburger when menu is closed */}
+      <header className="site-header sticky top-0 z-50 border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
             className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
@@ -212,87 +205,51 @@ export default function Home() {
           </a>
           <nav aria-label="Primary" className="nav-pill hidden items-center gap-8 rounded-full border border-accent-soft bg-[#F4EFE7] px-6 py-3 text-xs uppercase tracking-[0.14em] text-[#6F6056] shadow-[0_10px_30px_rgba(43,33,28,0.08)] lg:flex">
             {["top", "about", "services", "experience", "pricing"].map((id) => (
-              <a key={id} className="hover-text-accent" href={`#${id}`} onClick={() => setMenuOpen(false)}>
+              <a key={id} className="hover-text-accent" href={`#${id}`}>
                 {id === "top" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1)}
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="relative flex items-center gap-3">
             <a
               className="button-primary hidden text-xs uppercase tracking-[0.14em] lg:inline-flex"
               href="#contact"
             >
               Contact us
             </a>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((o) => !o)}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent lg:hidden"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-            >
-              {menuOpen ? (
-                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
+            {/* Native details/summary — browser toggles menu on click, no React state */}
+            <details ref={menuDetailsRef} className="relative lg:hidden group">
+              <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden [&::-moz-list-bullet]:hidden">
+                <span className="flex h-10 w-10 flex-shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]">
+                  <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </span>
+              </summary>
+              <nav
+                aria-label="Mobile menu"
+                className="absolute right-0 top-full z-[100] mt-2 min-w-[200px] rounded-xl border border-accent-soft bg-[#F8F1E9] py-2 shadow-[0_10px_40px_rgba(43,33,28,0.2)]"
+              >
+                {[
+                  { id: "top", label: "Home" },
+                  { id: "about", label: "About" },
+                  { id: "services", label: "Services" },
+                  { id: "contact", label: "Contact" },
+                ].map(({ id, label }) => (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    onClick={closeMenu}
+                    className="block px-5 py-3 text-sm font-medium uppercase tracking-[0.14em] text-[#6F6056] hover:bg-[#F4EFE7] hover:text-accent"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </details>
           </div>
         </div>
       </header>
-
-      {/* Mobile app-style overlay + drawer — only in DOM when open so hamburger is never blocked */}
-      {menuOpen && (
-      <div className="fixed inset-0 z-50 lg:hidden" aria-hidden={false}>
-        <button
-          type="button"
-          className="absolute inset-0 bg-black/40 opacity-100 transition-opacity duration-200"
-          onClick={() => setMenuOpen(false)}
-          aria-label="Close menu"
-        />
-        <aside
-          className="fixed top-0 right-0 z-50 flex h-full w-[min(85%,280px)] flex-col border-l border-accent-soft bg-[#F8F1E9] translate-x-0 transition-transform duration-200 ease-out"
-          style={{ boxShadow: "-8px 0 24px rgba(43,33,28,0.12)" }}
-        >
-          <div className="flex items-center justify-between border-b border-accent-soft px-6 py-5">
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">Menu</span>
-            <button
-              type="button"
-              onClick={() => setMenuOpen(false)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent"
-              aria-label="Close menu"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <nav aria-label="Mobile" className="flex flex-1 flex-col gap-0 overflow-auto px-6 py-6">
-            {["top", "about", "services", "experience", "pricing"].map((id) => (
-              <a
-                key={id}
-                className="border-b border-accent-soft py-4 text-sm font-medium uppercase tracking-[0.14em] text-[#6F6056] hover:text-accent"
-                href={`#${id}`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {id === "top" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1)}
-              </a>
-            ))}
-            <a
-              className="button-primary mt-6 inline-flex justify-center text-xs uppercase tracking-[0.14em]"
-              href="#contact"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contact us
-            </a>
-          </nav>
-        </aside>
-      </div>
-      )}
 
       {/* Main Content */}
       <main>
