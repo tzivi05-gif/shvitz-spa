@@ -1,12 +1,9 @@
-import type { MouseEvent } from "react";
-
 type GiveawayModalProps = {
   show: boolean;
   contactPhone: string;
   contactLocation: string;
   whatsappLink: string;
   onClose: () => void;
-  onNavClick: (event: MouseEvent<HTMLAnchorElement>, targetId: string) => void;
 };
 
 export default function GiveawayModal({
@@ -15,7 +12,6 @@ export default function GiveawayModal({
   contactLocation,
   whatsappLink,
   onClose,
-  onNavClick,
 }: GiveawayModalProps) {
   if (!show) {
     return null;
@@ -71,10 +67,7 @@ export default function GiveawayModal({
               <a
                 className="button-secondary text-xs uppercase tracking-[0.14em] text-accent"
                 href="#contact"
-                onClick={(event) => {
-                  onNavClick(event, "contact");
-                  onClose();
-                }}
+                onClick={onClose}
               >
                 Contact form
               </a>

@@ -14,7 +14,6 @@ type ContactFormProps = {
   formStatus: "idle" | "sending" | "success" | "error";
   formMessage: string;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onNavClick: (event: React.MouseEvent<HTMLAnchorElement>, targetId: string) => void;
 };
 
 export default function ContactForm({
@@ -24,7 +23,6 @@ export default function ContactForm({
   formStatus,
   formMessage,
   onSubmit,
-  onNavClick,
 }: ContactFormProps) {
   return (
     <section id="contact" className="section-block">
@@ -228,13 +226,6 @@ export default function ContactForm({
             <p className="mt-4 text-xs text-slate-500">
               Prefer to call? Dial {contactPhone}. Email {contactEmail}.
             </p>
-            <a
-              className="button-secondary mt-6 inline-flex w-full justify-center text-xs uppercase tracking-[0.14em] text-accent"
-              href="#top"
-              onClick={(event) => onNavClick(event, "top")}
-            >
-              Back to top
-            </a>
           </form>
         </div>
       </div>

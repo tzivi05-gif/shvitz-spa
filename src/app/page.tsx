@@ -1,16 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import {
-  useCallback,
-  useEffect,
-  useState,
-  type FormEvent,
-  type MouseEvent,
-} from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import ContactForm, { type ContactDetail } from "../components/ContactForm";
 import Gallery, { type GalleryItem } from "../components/Gallery";
-import GiveawayModal from "../components/GiveawayModal";
 import Hero from "../components/Hero";
 import Pricing, { type Tier } from "../components/Pricing";
 
@@ -92,28 +85,6 @@ export default function Home() {
   const [formMessage, setFormMessage] = useState("");
   const isModalOpen = showGiveaway;
 
-  // -------------------- Scroll Handling --------------------
-  const scrollToSection = useCallback((targetId: string) => {
-    if (typeof document === "undefined") return;
-
-    if (targetId === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    const target = document.getElementById(targetId);
-    if (target) {
-      const headerOffset = 92; // sticky header height
-      const y = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  }, []);
-
-  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    event.preventDefault();
-    scrollToSection(targetId);
-  };
-
   // -------------------- Gallery / Giveaway Modals --------------------
   useEffect(() => {
     if (selectedImage) {
@@ -147,6 +118,26 @@ export default function Home() {
       } catch {}
     }
   };
+
+  /** When modal is open, body has overflow:hidden so anchor scroll breaks. Close modal first, then scroll. */
+  const handleAnchorClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      if (!showGiveaway || !href.startsWith("#")) return;
+      e.preventDefault();
+      handleGiveawayClose();
+      const id = href.slice(1);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const el = document.getElementById(id);
+          if (el) {
+            window.history.pushState(null, "", href);
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    },
+    [showGiveaway]
+  );
 
   // -------------------- Contact Form --------------------
   const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -185,47 +176,123 @@ export default function Home() {
   // -------------------- Displayed Gallery --------------------
   const contactPhoneDial = contactPhone.replace(/[^0-9+]/g, "");
   const whatsappLink = `https://wa.me/${contactPhoneDial.replace("+", "")}`;
-  const handleSelectImage = useCallback(
-    (image: GalleryItem) => {
-      setSelectedImage(image);
-      scrollToSection("top");
-    },
-    [scrollToSection],
-  );
+  const handleSelectImage = useCallback((image: GalleryItem) => {
+    setSelectedImage(image);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   // -------------------- JSX --------------------
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
-    <div className="water-background bg-[#F8F1E9] text-[#2B211C]">
+    <div className="bg-[#F8F1E9] text-[#2B211C]">
       <span id="top" className="block h-0 w-0" />
 
       {/* Header */}
       <header className="site-header sticky top-0 z-40 border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
-          <div className="hidden sm:block">
-            <a
-              className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
-              href="#top"
-              onClick={(e) => handleNavClick(e, "top")}
-            >
-              THE SHVITZ
-            </a>
-          </div>
-          <nav aria-label="Primary" className="nav-pill flex items-center gap-8 rounded-full border border-accent-soft bg-[#F4EFE7] px-6 py-3 text-xs uppercase tracking-[0.14em] text-[#6F6056] shadow-[0_10px_30px_rgba(43,33,28,0.08)]">
-            {["top","about","services","experience","pricing"].map((id) => (
-              <a key={id} className="hover-text-accent" href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>
+          <a
+            className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
+            href="#top"
+          >
+            THE SHVITZ
+          </a>
+          <nav aria-label="Primary" className="nav-pill hidden items-center gap-8 rounded-full border border-accent-soft bg-[#F4EFE7] px-6 py-3 text-xs uppercase tracking-[0.14em] text-[#6F6056] shadow-[0_10px_30px_rgba(43,33,28,0.08)] lg:flex">
+            {["top", "about", "services", "experience", "pricing"].map((id) => (
+              <a key={id} className="hover-text-accent" href={`#${id}`} onClick={() => setMenuOpen(false)}>
                 {id === "top" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1)}
               </a>
             ))}
           </nav>
-          <a
-            className="button-primary text-xs uppercase tracking-[0.14em]"
-            href="#contact"
-            onClick={(e) => handleNavClick(e, "contact")}
-          >
-            Contact us
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              className="button-primary hidden text-xs uppercase tracking-[0.14em] lg:inline-flex"
+              href="#contact"
+            >
+              Contact us
+            </a>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((o) => !o)}
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent lg:hidden"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? (
+                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Mobile app-style overlay + drawer — only in DOM when open so hamburger is never blocked */}
+      {menuOpen && (
+      <div className="fixed inset-0 z-50 lg:hidden" aria-hidden={false}>
+        <button
+          type="button"
+          className="absolute inset-0 bg-black/40 opacity-100 transition-opacity duration-200"
+          onClick={() => setMenuOpen(false)}
+          aria-label="Close menu"
+        />
+        <aside
+          className="fixed top-0 right-0 z-50 flex h-full w-[min(85%,280px)] flex-col border-l border-accent-soft bg-[#F8F1E9] translate-x-0 transition-transform duration-200 ease-out"
+          style={{ boxShadow: "-8px 0 24px rgba(43,33,28,0.12)" }}
+        >
+          <div className="flex items-center justify-between border-b border-accent-soft px-6 py-5">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">Menu</span>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent"
+              aria-label="Close menu"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <nav aria-label="Mobile" className="flex flex-1 flex-col gap-0 overflow-auto px-6 py-6">
+            {["top", "about", "services", "experience", "pricing"].map((id) => (
+              <a
+                key={id}
+                className="border-b border-accent-soft py-4 text-sm font-medium uppercase tracking-[0.14em] text-[#6F6056] hover:text-accent"
+                href={`#${id}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {id === "top" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1)}
+              </a>
+            ))}
+            <a
+              className="button-primary mt-6 inline-flex justify-center text-xs uppercase tracking-[0.14em]"
+              href="#contact"
+              onClick={() => setMenuOpen(false)}
+            >
+              Contact us
+            </a>
+          </nav>
+        </aside>
+      </div>
+      )}
 
       {/* Main Content */}
       <main>
@@ -259,11 +326,12 @@ export default function Home() {
             </div>
           </section>
         )}
-        <Hero
-          showGiveaway={showGiveaway}
-          heroImage={gallery[0]}
-          onNavClick={handleNavClick}
-        />
+        <div className="water-background">
+          <Hero
+            showGiveaway={showGiveaway}
+            heroImage={gallery[0]}
+          />
+        </div>
         <section id="about" className="section-block">
           <div className="section-shell mx-auto w-full max-w-6xl">
             <p className="section-label">About</p>
@@ -299,27 +367,36 @@ export default function Home() {
           extraGallery={extraGallery}
           onSelectImage={handleSelectImage}
         />
-
-        <GiveawayModal show={showGiveaway} contactPhone={contactPhone} contactLocation={contactLocation} whatsappLink={whatsappLink} onClose={handleGiveawayClose} onNavClick={handleNavClick} />
-        <Pricing tiers={tiers} onNavClick={handleNavClick} />
-        <ContactForm contactDetails={contactDetails} contactPhone={contactPhone} contactEmail={contactEmail} formStatus={formStatus} formMessage={formMessage} onSubmit={handleContactSubmit} onNavClick={handleNavClick} />
+        <Pricing tiers={tiers} />
+        <ContactForm
+          contactDetails={contactDetails}
+          contactPhone={contactPhone}
+          contactEmail={contactEmail}
+          formStatus={formStatus}
+          formMessage={formMessage}
+          onSubmit={handleContactSubmit}
+        />
       </main>
 
-      {/* Back to Top */}
-      <a className="button-secondary fixed bottom-4 left-1/2 z-50 inline-flex -translate-x-1/2 items-center justify-center text-xs uppercase tracking-[0.14em] md:bottom-6" href="#top" onClick={(e) => handleNavClick(e, "top")}>
-        Back to top
-      </a>
+      {/* Back to Top - at bottom only */}
+      <div className="flex justify-center border-t border-accent-soft py-4 md:py-6">
+        <a className="button-secondary inline-flex items-center justify-center text-xs uppercase tracking-[0.14em]" href="#top">
+          Back to top
+        </a>
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-accent-soft">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-3 md:flex-row md:items-center md:justify-between md:gap-4 md:py-2">
           <div>
             <p className="text-sm font-semibold text-slate-600">The Shvitz</p>
-            <p className="mt-1 text-xs text-slate-500">Heat, cold, and calm for restoration and connection.</p>
+            <p className="mt-0.5 text-xs text-slate-500">Heat, cold, and calm for restoration and connection.</p>
           </div>
-          <div className="flex flex-wrap gap-2 text-[0.7rem] text-slate-500">
-            {["about","services","experience","pricing","contact"].map((id) => (
-              <a key={id} className="hover-text-accent" href={`#${id}`} onClick={(e) => handleNavClick(e, id)}>{id.charAt(0).toUpperCase() + id.slice(1)}</a>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[0.7rem] text-slate-500">
+            {["about", "services", "experience", "pricing", "contact"].map((id) => (
+              <a key={id} className="hover-text-accent" href={`#${id}`}>
+                {id.charAt(0).toUpperCase() + id.slice(1)}
+              </a>
             ))}
           </div>
           <p className="text-[0.68rem] text-slate-500">© 2026 The Shvitz. All rights reserved.</p>

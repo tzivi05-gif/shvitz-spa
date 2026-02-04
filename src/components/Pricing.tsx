@@ -1,5 +1,3 @@
-import type { MouseEvent } from "react";
-
 export type Tier = {
   name: string;
   detail: string;
@@ -8,10 +6,9 @@ export type Tier = {
 
 type PricingProps = {
   tiers: Tier[];
-  onNavClick: (event: MouseEvent<HTMLAnchorElement>, targetId: string) => void;
 };
 
-export default function Pricing({ tiers, onNavClick }: PricingProps) {
+export default function Pricing({ tiers }: PricingProps) {
   return (
     <section id="pricing" className="section-block">
       <div className="section-shell mx-auto w-full max-w-6xl">
@@ -50,7 +47,6 @@ export default function Pricing({ tiers, onNavClick }: PricingProps) {
               <a
                 className="button-secondary mt-6 inline-flex text-xs uppercase tracking-[0.14em] text-accent"
                 href="#contact"
-                onClick={(event) => onNavClick(event, "contact")}
               >
                 Request availability
               </a>

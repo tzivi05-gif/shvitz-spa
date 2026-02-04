@@ -1,6 +1,4 @@
 import Image from "next/image";
-import type { MouseEvent } from "react";
-
 type HeroImage = {
   src: string;
   alt: string;
@@ -9,10 +7,9 @@ type HeroImage = {
 type HeroProps = {
   showGiveaway: boolean;
   heroImage: HeroImage;
-  onNavClick: (event: MouseEvent<HTMLAnchorElement>, targetId: string) => void;
 };
 
-export default function Hero({ showGiveaway, heroImage, onNavClick }: HeroProps) {
+export default function Hero({ showGiveaway, heroImage }: HeroProps) {
   return (
     <section
       className={`hero-glow relative overflow-hidden transition-opacity duration-300 ${
@@ -39,14 +36,12 @@ export default function Hero({ showGiveaway, heroImage, onNavClick }: HeroProps)
             <a
               className="button-primary text-sm uppercase tracking-[0.14em]"
               href="#contact"
-              onClick={(event) => onNavClick(event, "contact")}
             >
               Book your session
             </a>
             <a
               className="button-secondary text-sm uppercase tracking-[0.14em] text-accent"
               href="#services"
-              onClick={(event) => onNavClick(event, "services")}
             >
               View amenities
             </a>

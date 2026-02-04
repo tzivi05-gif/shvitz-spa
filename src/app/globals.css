@@ -40,7 +40,7 @@ body.modal-open {
 }
 
 html {
-  scroll-padding-top: 0;
+  scroll-padding-top: 5.75rem; /* leave room for sticky header so it stays visible when scrolling to anchors */
   scroll-behavior: smooth;
 }
 
