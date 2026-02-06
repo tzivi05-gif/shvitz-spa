@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
               "base-uri 'self'; " +
               "form-action 'self'; " +
               "frame-ancestors 'none'; " +
-              "img-src 'self' data: blob:; " +
+              "img-src 'self' data: blob: https://api.qrserver.com; " +
               "font-src 'self' data:; " +
               "style-src 'self' 'unsafe-inline'; " +
               "script-src 'self'; " +

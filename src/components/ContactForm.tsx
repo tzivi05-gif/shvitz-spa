@@ -120,7 +120,12 @@ export default function ContactForm({
           <form
             className="surface-card rounded-3xl border border-accent-soft p-7"
             aria-label="Request availability form"
-            onSubmit={onSubmit}
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onSubmit(e);
+            }}
           >
             <div className="honeypot" aria-hidden="true">
               <label htmlFor="company-field">Company</label>
@@ -216,13 +221,21 @@ export default function ContactForm({
                 ? "Request sent"
                 : "Request availability"}
             </button>
-            <p
-              className="mt-4 text-xs text-slate-500"
-              role="status"
-              aria-live="polite"
-            >
-              {formMessage}
-            </p>
+            {formMessage && (
+              <p
+                className={`mt-4 text-xs ${
+                  formStatus === "error"
+                    ? "text-red-600 font-medium"
+                    : formStatus === "success"
+                    ? "text-green-600 font-medium"
+                    : "text-slate-500"
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                {formMessage}
+              </p>
+            )}
             <p className="mt-4 text-xs text-slate-500">
               Prefer to call? Dial {contactPhone}. Email {contactEmail}.
             </p>

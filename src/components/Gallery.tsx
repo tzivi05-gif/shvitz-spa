@@ -6,6 +6,8 @@ export type GalleryItem = {
   src: string;
   alt: string;
   modalClass?: string;
+  /** When true, display only the top-left quadrant (e.g. for 2x2 collage images). */
+  cropTopLeft?: boolean;
 };
 
 type GalleryProps = {
@@ -44,15 +46,30 @@ export default function Gallery({
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0 opacity-0 transition group-hover:opacity-100" />
 
-              <Image
-                src={image.src}
-                alt={image.alt}
-                width={640}
-                height={480}
-                className="h-64 w-full object-cover transition duration-700 group-hover:scale-105"
-                loading="lazy"
-                sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 90vw"
-              />
+              {image.cropTopLeft ? (
+                <div className="relative h-64 w-full overflow-hidden">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={640}
+                    height={480}
+                    className="absolute left-0 top-0 h-64 w-full object-cover object-left-top transition duration-700 group-hover:scale-105"
+                    style={{ width: "320%", height: "320%", objectFit: "cover", objectPosition: "0 0" }}
+                    loading="lazy"
+                    sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 90vw"
+                  />
+                </div>
+              ) : (
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={640}
+                  height={480}
+                  className="h-64 w-full object-cover transition duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 90vw"
+                />
+              )}
 
               <div className="absolute bottom-4 left-4 right-4 translate-y-2 text-left text-xs uppercase tracking-[0.14em] text-white/90 opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
                 {image.alt}

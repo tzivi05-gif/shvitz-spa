@@ -19,7 +19,7 @@ export default function GiveawayModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
       role="dialog"
       aria-modal="true"
       aria-label="Giveaway announcement"

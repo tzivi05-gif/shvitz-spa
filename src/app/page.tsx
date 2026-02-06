@@ -2,10 +2,13 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import ContactForm, { type ContactDetail } from "../components/ContactForm";
+import FoodMenu from "../components/FoodMenu";
 import Gallery, { type GalleryItem } from "../components/Gallery";
 import Hero from "../components/Hero";
-import Pricing, { type Tier } from "../components/Pricing";
+import Pricing from "../components/Pricing";
+import WhatsAppWidget from "../components/WhatsAppWidget";
 
 // -------------------- Data --------------------
 const services = [
@@ -18,23 +21,55 @@ const services = [
 ];
 
 const gallery: GalleryItem[] = [
-  { src: "/images/shvitz-calm-1.jpg", alt: "Hydrotherapy tub with warm light." },
+  { src: "/images/hot-tub-hero.png", alt: "Cozy wood-paneled spa atmosphere with warm lights." },
   { src: "/images/shvitz-calm-2.jpg", alt: "Relaxation lounge with soft lighting." },
-  { src: "/images/shvitz-calm-3.jpg", alt: "Stone-lined spa entry with cool glow." },
+  { src: "/images/stone-entry-glow.png", alt: "Stone-lined spa entry with soft glow.", cropTopLeft: true },
   { src: "/images/shvitz-calm-4.jpg", alt: "Quiet recovery room with massage chairs." },
 ];
 
 const extraGallery: GalleryItem[] = [
   { src: "/images/shvitz-07.jpg", alt: "Fresh towel stacks by the changing area.", modalClass: "scale-[1.04]" },
   { src: "/images/shvitz-08.jpg", alt: "Refreshment bar with coffee and snacks.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-09.jpg", alt: "Sauna heater with warm cedar seating.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-09.png", alt: "Sauna heater with warm cedar seating.", modalClass: "scale-[1.04]" },
   { src: "/images/shvitz-10.jpg", alt: "Cold plunge entry with marble walls.", modalClass: "scale-[1.04]" },
 ];
 
-const tiers: Tier[] = [
-  { name: "Drop-in sessions", detail: "Single visits designed to fit your schedule.", items: ["Flexible access", "Ideal for first-time visits", "Easy to book"] },
-  { name: "Multi-visit packages", detail: "Save when you visit more often.", items: ["Bundle options", "Perfect for regular recovery", "Shareable"] },
-  { name: "Monthly memberships", detail: "Consistent wellness and member perks.", items: ["Best value", "Priority availability", "Built-in ritual"] },
+const pricing = {
+  publicEntry: { cashZelle: 60, credit: 65 },
+  fridayEntry: { cashZelle: 50, credit: 55 },
+  privateRates: { couple: 200, group38: 250, additionalPerPerson: 25 },
+  rules: [
+    { title: "Dressing area", text: "Please leave the dressing area neat to allow others space as well. Please put your stuff in a locker, not on the benches." },
+    { title: "Neighbors", text: "Please respect our neighbors. When outdoors at night please stay silent." },
+    { title: "Parking", text: "Please park in a way to minimize traffic. Your continued efforts will allow us to stay open." },
+  ],
+};
+
+const foodMenuItems = [
+  {
+    name: "All week: Chummus Plates",
+    description: "Comes with toasted pita.",
+    variations: [
+      { label: "Regular", price: 15 },
+      { label: "Shwarma", price: 20 },
+      { label: "Liver", price: 20 },
+      { label: "Pulled Beef", price: 25 },
+    ],
+  },
+  { name: "Soup of the day", price: 10 },
+  {
+    name: "Grilled Steak",
+    price: 75,
+    description: "Comes with side of fries, or mashed potatoes.",
+  },
+  { name: "Motzei Shabbos: 12\" Sour Dough Pizza", price: 25 },
+  { name: "Thursday night: Chulent", price: 10 },
+];
+
+const foodMenuDrinks = [
+  { label: "Cans of soda", price: 2 },
+  { label: "Bottled soda", price: 3 },
+  { label: "Beer", price: 3 },
 ];
 
 const contactEmail = "hello@theshvitz.com";
@@ -142,12 +177,16 @@ export default function Home() {
   // -------------------- Contact Form --------------------
   const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    event.stopPropagation();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const name = String(formData.get("name") || "").trim();
     const email = String(formData.get("email") || "").trim();
     const treatment = String(formData.get("treatment") || "").trim();
     const notes = String(formData.get("message") || "").trim();
     const company = String(formData.get("company_field") || "").trim();
+
+    console.log("Form submitted:", { name, email, treatment, notes: notes.substring(0, 20) });
 
     setFormStatus("sending");
     setFormMessage("");
@@ -159,17 +198,26 @@ export default function Home() {
         body: JSON.stringify({ name, email, treatment, notes, company_field: company }),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const data = await response.json().catch(() => null);
-        throw new Error(data?.error || "Something went wrong. Please try again.");
+        const errorMessage = data?.error || `Server error (${response.status}). Please try again.`;
+        console.error("Contact form error:", errorMessage, data);
+        throw new Error(errorMessage);
       }
 
       setFormStatus("success");
       setFormMessage("Thanks! We will reach out shortly.");
-      event.currentTarget.reset();
-    } catch {
+      form.reset();
+      // Keep user at the form so they see the success message (avoids any jump to top)
+      requestAnimationFrame(() => {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    } catch (error) {
+      console.error("Contact form submission failed:", error);
       setFormStatus("error");
-      setFormMessage(`We could not send that right now. Please call ${contactPhone} or email ${contactEmail}.`);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      setFormMessage(`Error: ${errorMessage}. Please call ${contactPhone} or email ${contactEmail}.`);
     }
   };
 
@@ -183,19 +231,46 @@ export default function Home() {
     }
   }, []);
 
-  // -------------------- JSX --------------------
-  const menuDetailsRef = useRef<HTMLDetailsElement>(null);
+  // -------------------- Mobile menu — fixed overlay via portal so it’s never clipped --------------------
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  const closeMenu = useCallback(() => {
-    menuDetailsRef.current?.removeAttribute("open");
-  }, []);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    document.body.classList.toggle("modal-open", menuOpen);
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMenu();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen, closeMenu]);
+
+  const mobileMenuLinks = [
+    { id: "top", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "services", label: "Services" },
+    { id: "experience", label: "Gallery" },
+    { id: "pricing", label: "Pricing" },
+    { id: "menu", label: "Menu" },
+    { id: "contact", label: "Contact" },
+  ];
 
   return (
     <div className="bg-[#F8F1E9] text-[#2B211C]">
       <span id="top" className="block h-0 w-0" />
 
-      {/* Header — z-50 so nothing covers the hamburger when menu is closed */}
-      <header className="site-header sticky top-0 z-50 border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
+      {/* Header — z-[100] so it stays above WhatsApp and other fixed elements */}
+      <header className="site-header sticky top-0 z-[100] border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
             className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
@@ -204,7 +279,7 @@ export default function Home() {
             THE SHVITZ
           </a>
           <nav aria-label="Primary" className="nav-pill hidden items-center gap-8 rounded-full border border-accent-soft bg-[#F4EFE7] px-6 py-3 text-xs uppercase tracking-[0.14em] text-[#6F6056] shadow-[0_10px_30px_rgba(43,33,28,0.08)] lg:flex">
-            {["top", "about", "services", "experience", "pricing"].map((id) => (
+            {["top", "about", "services", "experience", "pricing", "menu"].map((id) => (
               <a key={id} className="hover-text-accent" href={`#${id}`}>
                 {id === "top" ? "Home" : id.charAt(0).toUpperCase() + id.slice(1)}
               </a>
@@ -217,39 +292,78 @@ export default function Home() {
             >
               Contact us
             </a>
-            {/* Native details/summary — browser toggles menu on click, no React state */}
-            <details ref={menuDetailsRef} className="relative lg:hidden group">
-              <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden [&::-moz-list-bullet]:hidden">
-                <span className="flex h-10 w-10 flex-shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]">
+            {/* Mobile menu — button toggles; overlay (portal) shows menu and backdrop */}
+            <div className="relative z-[110] lg:hidden">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMenuOpen((prev) => !prev);
+                }}
+                aria-expanded={menuOpen}
+                aria-haspopup="true"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                className="relative z-[110] flex h-10 w-10 flex-shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]"
+              >
+                {menuOpen ? (
+                  <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                ) : (
                   <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <path d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
-                </span>
-              </summary>
-              <nav
-                aria-label="Mobile menu"
-                className="absolute right-0 top-full z-[100] mt-2 min-w-[200px] rounded-xl border border-accent-soft bg-[#F8F1E9] py-2 shadow-[0_10px_40px_rgba(43,33,28,0.2)]"
-              >
-                {[
-                  { id: "top", label: "Home" },
-                  { id: "about", label: "About" },
-                  { id: "services", label: "Services" },
-                  { id: "contact", label: "Contact" },
-                ].map(({ id, label }) => (
-                  <a
-                    key={id}
-                    href={`#${id}`}
-                    onClick={closeMenu}
-                    className="block px-5 py-3 text-sm font-medium uppercase tracking-[0.14em] text-[#6F6056] hover:bg-[#F4EFE7] hover:text-accent"
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </details>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </header>
+
+      {/* Mobile menu overlay — portal so it’s never clipped; backdrop below header (z-[90]) */}
+      {mounted &&
+        menuOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[105] lg:hidden"
+            aria-hidden="false"
+          >
+            <div
+              className="absolute left-0 right-0 top-20 bottom-0 bg-[#2B211C]/40 z-0"
+              onClick={closeMenu}
+              aria-hidden="true"
+            />
+            <nav
+              aria-label="Mobile menu"
+              className="absolute right-4 z-10 min-w-[200px] rounded-xl border border-accent-soft bg-[#F8F1E9] py-2 shadow-[0_10px_40px_rgba(43,33,28,0.2)]"
+              style={{ top: '88px' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {mobileMenuLinks.map(({ id, label }) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    closeMenu();
+                    // Small delay to ensure menu closes before scroll
+                    setTimeout(() => {
+                      const element = document.getElementById(id);
+                      if (element) {
+                        element.scrollIntoView({ behavior: "smooth", block: "start" });
+                        window.history.pushState(null, "", `#${id}`);
+                      }
+                    }, 100);
+                  }}
+                  className="block px-5 py-3 text-sm font-medium uppercase tracking-[0.14em] text-[#6F6056] hover:bg-[#F4EFE7] hover:text-accent transition-colors"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
+          </div>,
+          document.body
+        )}
 
       {/* Main Content */}
       <main>
@@ -265,16 +379,32 @@ export default function Home() {
                   Close
                 </button>
                 <div className="overflow-hidden rounded-[2rem]">
-                  <Image
-                    key={selectedImage.src}
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    width={1600}
-                    height={1000}
-                    className="h-[50vh] w-full object-cover sm:h-[60vh]"
-                    sizes="100vw"
-                    priority
-                  />
+                  {selectedImage.cropTopLeft ? (
+                    <div className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh]">
+                      <Image
+                        key={selectedImage.src}
+                        src={selectedImage.src}
+                        alt={selectedImage.alt}
+                        width={1600}
+                        height={1000}
+                        className="absolute left-0 top-0 object-cover object-left-top"
+                        style={{ width: "320%", height: "320%", objectFit: "cover", objectPosition: "0 0" }}
+                        sizes="100vw"
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <Image
+                      key={selectedImage.src}
+                      src={selectedImage.src}
+                      alt={selectedImage.alt}
+                      width={1600}
+                      height={1000}
+                      className="h-[50vh] w-full object-cover sm:h-[60vh]"
+                      sizes="100vw"
+                      priority
+                    />
+                  )}
                 </div>
                 <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
                   {selectedImage.alt}
@@ -324,7 +454,19 @@ export default function Home() {
           extraGallery={extraGallery}
           onSelectImage={handleSelectImage}
         />
-        <Pricing tiers={tiers} />
+        <Pricing
+          publicEntry={pricing.publicEntry}
+          fridayEntry={pricing.fridayEntry}
+          privateRates={pricing.privateRates}
+          rules={pricing.rules}
+        />
+        <FoodMenu
+          items={foodMenuItems}
+          drinks={foodMenuDrinks}
+          chefSignature="By Chef Shloimy Friedlander"
+          contactAddress="10 Sands Point Rd, Monsey, NY 10952"
+          contactPhone={contactPhone}
+        />
         <ContactForm
           contactDetails={contactDetails}
           contactPhone={contactPhone}
@@ -336,7 +478,7 @@ export default function Home() {
       </main>
 
       {/* Back to Top - at bottom only */}
-      <div className="flex justify-center border-t border-accent-soft py-4 md:py-6">
+      <div className="flex justify-center py-4 md:py-6">
         <a className="button-secondary inline-flex items-center justify-center text-xs uppercase tracking-[0.14em]" href="#top">
           Back to top
         </a>
@@ -350,7 +492,7 @@ export default function Home() {
             <p className="mt-0.5 text-xs text-slate-500">Heat, cold, and calm for restoration and connection.</p>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-[0.7rem] text-slate-500">
-            {["about", "services", "experience", "pricing", "contact"].map((id) => (
+            {["about", "services", "experience", "pricing", "menu", "contact"].map((id) => (
               <a key={id} className="hover-text-accent" href={`#${id}`}>
                 {id.charAt(0).toUpperCase() + id.slice(1)}
               </a>
@@ -359,6 +501,9 @@ export default function Home() {
           <p className="text-[0.68rem] text-slate-500">© 2026 The Shvitz. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* WhatsApp Widget */}
+      <WhatsAppWidget phoneNumber={contactPhone} />
     </div>
   );
 }
