@@ -24,8 +24,9 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://api.qrserver.com; " +
               "font-src 'self' data:; " +
               "style-src 'self' 'unsafe-inline'; " +
-              "script-src 'self' 'unsafe-inline'; " +
-              "connect-src 'self'; " +
+              "script-src 'self' 'unsafe-inline' https://vercel.live; " +
+              "script-src-elem 'self' 'unsafe-inline' https://vercel.live; " +
+              "connect-src 'self' https://vercel.live; " +
               "object-src 'none'",
           },
           { key: "Referrer-Policy", value: "no-referrer" },

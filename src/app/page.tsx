@@ -117,7 +117,6 @@ export default function Home() {
   const [showGiveaway, setShowGiveaway] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [formMessage, setFormMessage] = useState("");
-  const isModalOpen = showGiveaway;
 
   // -------------------- Gallery / Giveaway Modals --------------------
   useEffect(() => {
@@ -129,10 +128,6 @@ export default function Home() {
       return () => window.removeEventListener("keydown", handleKeyDown);
     }
   }, [selectedImage]);
-
-  useEffect(() => {
-    document.body.classList.toggle("modal-open", isModalOpen);
-  }, [isModalOpen]);
 
   useEffect(() => {
     const storageKey = "shvitz-giveaway-dismissed";
@@ -238,13 +233,11 @@ export default function Home() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Prevent body scroll when menu is open
+  // Lock body scroll only for gallery lightbox or mobile menu — not giveaway
+  const isModalOpen = !!selectedImage || menuOpen;
   useEffect(() => {
-    document.body.classList.toggle("modal-open", menuOpen);
-    return () => {
-      document.body.classList.remove("modal-open");
-    };
-  }, [menuOpen]);
+    document.body.classList.toggle("modal-open", isModalOpen);
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -271,7 +264,7 @@ export default function Home() {
 
   // Only close from backdrop if menu has been open long enough (stops opening click from closing)
   const handleBackdropClick = useCallback(() => {
-    if (Date.now() - menuOpenedAtRef.current < 400) return;
+    if (Date.now() - menuOpenedAtRef.current < 150) return;
     closeMenu();
   }, [closeMenu]);
 
@@ -288,7 +281,7 @@ export default function Home() {
       <span id="top" className="block h-0 w-0" />
 
       {/* Header — z-[200] so it stays above menu overlay and any modals; hamburger/close always clickable */}
-      <header className="site-header sticky top-0 z-[200] border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
+      <header className="site-header sticky top-0 z-[200] border-b border-accent-soft bg-[#F8F1E9] backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
             className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
@@ -336,7 +329,7 @@ export default function Home() {
             aria-hidden="false"
           >
             <div
-              className="absolute inset-0 bg-[#2B211C]/40"
+              className="absolute inset-0 bg-[#2B211C]/25"
               onClick={handleBackdropClick}
               aria-hidden="true"
             />
