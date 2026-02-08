@@ -203,10 +203,6 @@ export default function Home() {
       setFormStatus("success");
       setFormMessage("Thanks! We will reach out shortly.");
       form.reset();
-      // Keep user at the form so they see the success message (avoids any jump to top)
-      requestAnimationFrame(() => {
-        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
     } catch (error) {
       console.error("Contact form submission failed:", error);
       setFormStatus("error");
@@ -233,8 +229,8 @@ export default function Home() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Lock body scroll only for gallery lightbox or mobile menu — not giveaway
-  const isModalOpen = !!selectedImage || menuOpen;
+  // Lock body scroll only for gallery lightbox, mobile menu, or booking success popup
+  const isModalOpen = !!selectedImage || menuOpen || formStatus === "success";
   useEffect(() => {
     document.body.classList.toggle("modal-open", isModalOpen);
   }, [isModalOpen]);
@@ -247,6 +243,20 @@ export default function Home() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [menuOpen, closeMenu]);
+
+  const closeBookingSuccessPopup = useCallback(() => {
+    setFormStatus("idle");
+    setFormMessage("");
+  }, []);
+
+  useEffect(() => {
+    if (formStatus !== "success") return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeBookingSuccessPopup();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [formStatus, closeBookingSuccessPopup]);
 
   // Native click listener on hamburger so menu opens even if React synthetic events don't fire
   useEffect(() => {
@@ -374,6 +384,38 @@ export default function Home() {
               </nav>
             </div>
           </div>
+      )}
+
+      {/* Booking success popup */}
+      {formStatus === "success" && (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Booking request sent"
+          onClick={closeBookingSuccessPopup}
+        >
+          <div
+            className="relative w-full max-w-md overflow-hidden rounded-[32px] border border-accent-soft bg-[#FDF7F1] p-8 shadow-[0_30px_90px_rgba(25,18,14,0.35)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeBookingSuccessPopup}
+              className="absolute right-5 top-5 rounded-full border border-accent bg-white px-3 py-1 text-xs uppercase tracking-[0.18em] text-[#2B211C] hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              aria-label="Close popup"
+            >
+              Close
+            </button>
+            <p className="text-xs uppercase tracking-[0.24em] text-accent">The Shvitz</p>
+            <p className="mt-4 text-xl font-semibold text-[#2B211C] md:text-2xl">
+              Thanks! We will reach out shortly.
+            </p>
+            <p className="mt-2 text-sm text-slate-600">
+              We received your request and will get back to you soon.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Main Content */}
