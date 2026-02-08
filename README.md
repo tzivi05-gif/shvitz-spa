@@ -26,11 +26,14 @@ project root (or edit the existing one) with:
 ```
 RESEND_API_KEY=your_resend_api_key
 CONTACT_TO=your_inbox@example.com
-CONTACT_FROM=Shvitz <onboarding@resend.dev>
 ```
 
-For a professional sender, verify your domain in Resend and set `CONTACT_FROM`
-to a verified address like `Shvitz <hello@yourdomain.com>`.
+**Free (no domain needed):** Do **not** set `CONTACT_FROM`. The app will send from
+`Shvitz <onboarding@resend.dev>` (Resend’s test sender). Resend’s free tier gives
+3,000 emails/month, 100/day—no domain verification required.
+
+**Custom domain (e.g. contact@theshvitz.com):** Verify your domain at
+https://resend.com/domains, then set `CONTACT_FROM=Shvitz <contact@theshvitz.com>`.
 
 ## Deployment (Vercel)
 
