@@ -229,8 +229,8 @@ export default function Home() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Lock body scroll only for gallery lightbox, mobile menu, or booking success popup
-  const isModalOpen = !!selectedImage || menuOpen || formStatus === "success";
+  // Lock body scroll only for gallery lightbox, mobile menu, or booking popups
+  const isModalOpen = !!selectedImage || menuOpen || formStatus === "success" || formStatus === "error";
   useEffect(() => {
     document.body.classList.toggle("modal-open", isModalOpen);
   }, [isModalOpen]);
@@ -249,14 +249,22 @@ export default function Home() {
     setFormMessage("");
   }, []);
 
+  const closeBookingErrorPopup = useCallback(() => {
+    setFormStatus("idle");
+    setFormMessage("");
+  }, []);
+
   useEffect(() => {
-    if (formStatus !== "success") return;
+    if (formStatus !== "success" && formStatus !== "error") return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeBookingSuccessPopup();
+      if (e.key === "Escape") {
+        closeBookingSuccessPopup();
+        closeBookingErrorPopup();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [formStatus, closeBookingSuccessPopup]);
+  }, [formStatus, closeBookingSuccessPopup, closeBookingErrorPopup]);
 
   // Native click listener on hamburger so menu opens even if React synthetic events don't fire
   useEffect(() => {
@@ -413,6 +421,38 @@ export default function Home() {
             </p>
             <p className="mt-2 text-sm text-slate-600">
               We received your request and will get back to you soon.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Booking error popup */}
+      {formStatus === "error" && (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Booking request error"
+          onClick={closeBookingErrorPopup}
+        >
+          <div
+            className="relative w-full max-w-md overflow-hidden rounded-[32px] border border-red-200 bg-[#FDF7F1] p-8 shadow-[0_30px_90px_rgba(25,18,14,0.35)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeBookingErrorPopup}
+              className="absolute right-5 top-5 rounded-full border border-accent bg-white px-3 py-1 text-xs uppercase tracking-[0.18em] text-[#2B211C] hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              aria-label="Close popup"
+            >
+              Close
+            </button>
+            <p className="text-xs uppercase tracking-[0.24em] text-accent">The Shvitz</p>
+            <p className="mt-4 text-lg font-semibold text-red-700 md:text-xl">
+              Unable to send your request
+            </p>
+            <p className="mt-2 text-sm text-slate-600">
+              {formMessage}
             </p>
           </div>
         </div>
