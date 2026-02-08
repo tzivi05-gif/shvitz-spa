@@ -5,17 +5,12 @@ type HeroImage = {
 };
 
 type HeroProps = {
-  showGiveaway: boolean;
   heroImage: HeroImage;
 };
 
-export default function Hero({ showGiveaway, heroImage }: HeroProps) {
+export default function Hero({ heroImage }: HeroProps) {
   return (
-    <section
-      className={`hero-glow relative overflow-hidden transition-opacity duration-300 ${
-        showGiveaway ? "opacity-30" : "opacity-100"
-      }`}
-    >
+    <section className="hero-glow relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.92),transparent_60%)]" />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-20 xl:flex-row xl:items-center">
         <div className="relative z-10 order-2 flex-1">

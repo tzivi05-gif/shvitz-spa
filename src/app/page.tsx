@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { createPortal } from "react-dom";
 import ContactForm, { type ContactDetail } from "../components/ContactForm";
 import FoodMenu from "../components/FoodMenu";
 import Gallery, { type GalleryItem } from "../components/Gallery";
@@ -233,8 +232,9 @@ export default function Home() {
 
   // -------------------- Mobile menu — fixed overlay via portal so it’s never clipped --------------------
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const menuOpenedAtRef = useRef<number>(0);
+  const menuPanelRef = useRef<HTMLElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -255,22 +255,40 @@ export default function Home() {
     return () => document.removeEventListener("keydown", onKey);
   }, [menuOpen, closeMenu]);
 
+  // Native click listener on hamburger so menu opens even if React synthetic events don't fire
+  useEffect(() => {
+    const btn = menuButtonRef.current;
+    if (!btn) return;
+    const handleClick = () => {
+      setMenuOpen((prev) => {
+        if (!prev) menuOpenedAtRef.current = Date.now();
+        return !prev;
+      });
+    };
+    btn.addEventListener("click", handleClick);
+    return () => btn.removeEventListener("click", handleClick);
+  }, []);
+
+  // Only close from backdrop if menu has been open long enough (stops opening click from closing)
+  const handleBackdropClick = useCallback(() => {
+    if (Date.now() - menuOpenedAtRef.current < 400) return;
+    closeMenu();
+  }, [closeMenu]);
+
   const mobileMenuLinks = [
     { id: "top", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "experience", label: "Gallery" },
-    { id: "pricing", label: "Pricing" },
-    { id: "menu", label: "Menu" },
     { id: "contact", label: "Contact" },
+    { id: "pricing", label: "Pricing" },
+    { id: "experience", label: "Experience" },
+    { id: "menu", label: "Menu" },
   ];
 
   return (
     <div className="bg-[#F8F1E9] text-[#2B211C]">
       <span id="top" className="block h-0 w-0" />
 
-      {/* Header — z-[100] so it stays above WhatsApp and other fixed elements */}
-      <header className="site-header sticky top-0 z-[100] border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
+      {/* Header — z-[200] so it stays above menu overlay and any modals; hamburger/close always clickable */}
+      <header className="site-header sticky top-0 z-[200] border-b border-accent-soft bg-[#F8F1E9]/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
             className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
@@ -292,28 +310,19 @@ export default function Home() {
             >
               Contact us
             </a>
-            {/* Mobile menu — button toggles; overlay (portal) shows menu and backdrop */}
-            <div className="relative z-[110] lg:hidden">
+            {/* Mobile menu — button toggles; overlay shows menu and backdrop */}
+            <div className="relative z-[120] block lg:hidden">
               <button
+                ref={menuButtonRef}
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuOpen((prev) => !prev);
-                }}
                 aria-expanded={menuOpen}
                 aria-haspopup="true"
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
-                className="relative z-[110] flex h-10 w-10 flex-shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]"
+                className="relative z-[120] flex h-10 w-10 flex-shrink-0 cursor-pointer touch-manipulation select-none items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]"
               >
-                {menuOpen ? (
-                  <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                )}
+                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
               </button>
             </div>
           </div>
@@ -321,27 +330,36 @@ export default function Home() {
       </header>
 
       {/* Mobile menu overlay — portal so it’s never clipped; backdrop below header (z-[90]) */}
-      {mounted &&
-        menuOpen &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-[105] lg:hidden"
+      {menuOpen && (
+        <div
+            className="fixed inset-0 z-[150] lg:hidden"
             aria-hidden="false"
           >
             <div
-              className="absolute left-0 right-0 top-20 bottom-0 bg-[#2B211C]/40 z-0"
-              onClick={closeMenu}
+              className="absolute inset-0 bg-[#2B211C]/40"
+              onClick={handleBackdropClick}
               aria-hidden="true"
             />
-            <nav
-              aria-label="Mobile menu"
-              className="absolute right-4 z-10 min-w-[200px] rounded-xl border border-accent-soft bg-[#F8F1E9] py-2 shadow-[0_10px_40px_rgba(43,33,28,0.2)]"
-              style={{ top: '88px' }}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="absolute right-4 top-5 z-20 flex flex-col items-end">
+              <nav
+                ref={menuPanelRef}
+                aria-label="Mobile menu"
+                className="surface-card relative min-w-[200px] rounded-2xl border border-accent-soft pt-14 pb-2 shadow-[0_14px_40px_rgba(43,33,28,0.18)]"
+                onClick={(e) => e.stopPropagation()}
+              >
+              <button
+                type="button"
+                onClick={closeMenu}
+                aria-label="Close menu"
+                className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-accent-soft bg-[#F4EFE7] text-[#6F6056] hover:text-accent active:bg-[#EBE4DC]"
+              >
+                <svg aria-hidden className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
               {mobileMenuLinks.map(({ id, label }) => (
                 <a
-                  key={id}
+                  key={label}
                   href={`#${id}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -360,10 +378,10 @@ export default function Home() {
                   {label}
                 </a>
               ))}
-            </nav>
-          </div>,
-          document.body
-        )}
+              </nav>
+            </div>
+          </div>
+      )}
 
       {/* Main Content */}
       <main>
@@ -414,10 +432,7 @@ export default function Home() {
           </section>
         )}
         <div className="water-background">
-          <Hero
-            showGiveaway={showGiveaway}
-            heroImage={gallery[0]}
-          />
+          <Hero heroImage={gallery[0]} />
         </div>
         <section id="about" className="section-block">
           <div className="section-shell mx-auto w-full max-w-6xl">
