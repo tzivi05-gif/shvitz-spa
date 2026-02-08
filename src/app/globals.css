@@ -42,6 +42,7 @@ body.modal-open {
 html {
   scroll-padding-top: 5.75rem; /* leave room for sticky header so it stays visible when scrolling to anchors */
   scroll-behavior: smooth;
+  scrollbar-gutter: stable; /* reserve space for scrollbar so layout doesn't jump when content loads */
 }
 
 main {
