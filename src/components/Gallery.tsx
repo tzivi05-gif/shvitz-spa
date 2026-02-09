@@ -26,9 +26,9 @@ export default function Gallery({
   return (
     <section
       id="experience"
-      className="section-block bg-gradient-to-b from-[#F6EDE3] to-[#F0E1D6]/70"
+      className="section-block relative overflow-hidden"
     >
-      <div className="section-shell mx-auto w-full max-w-6xl">
+      <div className="section-shell relative z-10 mx-auto w-full max-w-6xl">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="section-label">Gallery</p>
