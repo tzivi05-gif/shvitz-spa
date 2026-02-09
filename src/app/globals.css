@@ -28,8 +28,6 @@ body {
   line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
   letter-spacing: -0.006em;
   font-weight: 400;
   font-optical-sizing: auto;
@@ -42,7 +40,9 @@ body.modal-open {
 }
 
 html {
-  scroll-padding-top: 0;
+  scroll-padding-top: 5.75rem; /* leave room for sticky header so it stays visible when scrolling to anchors */
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable; /* reserve space for scrollbar so layout doesn't jump when content loads */
 }
 
 main {
@@ -294,6 +294,40 @@ p {
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.slide-in-from-bottom-4 {
+  animation: slide-in-from-bottom 0.6s ease-out forwards;
+  opacity: 0;
+}
+
 .text-slate-900 {
   color: #6D5F56;
 }
@@ -363,6 +397,27 @@ p {
 .gallery-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 16px 36px rgba(45, 35, 31, 0.12);
+}
+
+.gallery-details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.gallery-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.gallery-details .details-open {
+  display: none;
+}
+
+.gallery-details[open] .details-open {
+  display: inline;
+}
+
+.gallery-details[open] .details-closed {
+  display: none;
 }
 
 .button-primary,
@@ -498,4 +553,8 @@ button:focus-visible {
   .button-secondary {
     transition: none;
   }
+}
+
+.menu-card-no-bottom-padding {
+  padding-bottom: 0.75rem !important;
 }

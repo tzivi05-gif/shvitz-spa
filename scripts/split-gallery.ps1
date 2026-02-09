@@ -1,4 +1,4 @@
-$src = "C:\Users\Tzivi Hamburger\.cursor\projects\c-Users-Tzivi-Hamburger-zhvitz-spa\assets\c__Users_Tzivi_Hamburger_AppData_Roaming_Cursor_User_workspaceStorage_0e2f899a82e5d289305037d9f66a9831_images_ChatGPT_Image_Jan_31__2026__02_12_05_PM-30b0fc91-1a6a-402b-b761-9d63cb127c31.png"
+$src = "C:\Users\Tzivi Hamburger\.cursor\projects\c-Users-Tzivi-Hamburger-zhvitz-spa\assets\c__Users_Tzivi_Hamburger_AppData_Roaming_Cursor_User_workspaceStorage_0e2f899a82e5d289305037d9f66a9831_images_ChatGPT_Image_Feb_4__2026__07_46_45_AM-fa61653c-af81-4780-930e-2d303ee985af.png"
 $outDir = "C:\Users\Tzivi Hamburger\zhvitz-spa\public\images"
 
 Add-Type -AssemblyName System.Drawing
@@ -33,7 +33,7 @@ for ($i = 0; $i -lt 4; $i++) {
     [System.Drawing.GraphicsUnit]::Pixel
   )
 
-  $outPath = Join-Path $outDir ("shvitz-calm-{0}.jpg" -f ($i + 1))
+  $outPath = Join-Path $outDir ("shvitz-{0}.jpg" -f ($i + 7))
   $bmp.Save($outPath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
   $g.Dispose()
   $bmp.Dispose()
