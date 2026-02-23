@@ -9,7 +9,7 @@ export const gallery: GalleryItem[] = [
 
 export const extraGallery: GalleryItem[] = [
   { src: "/images/towel-storage.png", alt: "Fresh towel stacks and changing area.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-08.jpg", alt: "Refreshment bar with coffee and snacks.", modalClass: "scale-[1.04]" },
+  { src: "/images/shvitz-08.png", alt: "Refreshment station with sink, beverage dispenser, mini-fridge, and snacks on marble and pebble-mosaic spa setting.", modalClass: "scale-[1.04]" },
   { src: "/images/sauna-interior.png", alt: "Sauna interior with warm cedar benches and heater.", modalClass: "scale-[1.04]" },
-  { src: "/images/steam-room-entry.png", alt: "Steam room entrance with temperature display, glass door, and marble walls.", modalClass: "scale-[1.04]" },
+  { src: "/images/steam-room-entry.png", alt: "Sauna or steam room entrance with black-framed glass door and marble walls.", modalClass: "scale-[1.04]" },
 ];
