@@ -72,11 +72,11 @@ export default function Home() {
     <div className="min-w-full w-full bg-[#F8F1E9] text-[#2B211C] overflow-x-hidden">
       <span id="top" className="block h-0 w-0" />
 
-      {/* Header — z-[200] so it stays above menu overlay and any modals; hamburger/close always clickable */}
-      <header className="site-header sticky top-0 z-[200] border-b border-accent-soft bg-[#F8F1E9] backdrop-blur-sm">
+      {/* Header — fixed so it stays on top when scrolling; z-[200] above menu overlay and modals */}
+      <header className="site-header border-b border-accent-soft bg-[#F8F1E9] backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
-            className="text-sm font-semibold tracking-[0.18em] text-accent hover-text-accent"
+            className="text-sm font-medium tracking-[0.18em] text-accent hover-text-accent"
             href="#top"
           >
             THE SHVITZ
@@ -113,6 +113,9 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Spacer so content is not hidden under the fixed header (matches header height) */}
+      <div className="h-20" aria-hidden="true" />
 
       {/* Mobile menu overlay — portal so it's never clipped; backdrop below header (z-[90]) */}
       {menuOpen && (
@@ -190,7 +193,7 @@ export default function Home() {
               Close
             </button>
             <p className="text-xs uppercase tracking-[0.24em] text-accent">The Shvitz</p>
-            <p className="mt-4 text-xl font-semibold text-[#2B211C] md:text-2xl">
+            <p className="mt-4 text-xl font-medium text-[#2B211C] md:text-2xl">
               Thanks! We will reach out shortly.
             </p>
             <p className="mt-2 text-sm text-slate-600">
@@ -222,7 +225,7 @@ export default function Home() {
               Close
             </button>
             <p className="text-xs uppercase tracking-[0.24em] text-accent">The Shvitz</p>
-            <p className="mt-4 text-lg font-semibold text-red-700 md:text-xl">
+            <p className="mt-4 text-lg font-medium text-red-700 md:text-xl">
               Unable to send your request
             </p>
             <p className="mt-2 text-sm text-slate-600">
@@ -251,7 +254,7 @@ export default function Home() {
             onClick={(e) => e.stopPropagation()}
           >
           {/* Close */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-end pointer-events-none">
+          <div className="absolute top-12 left-4 right-4 z-20 flex items-center justify-end pointer-events-none">
             <button
               type="button"
               onClick={() => setSelectedImage(null)}
@@ -380,7 +383,7 @@ export default function Home() {
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-semibold text-slate-600">{service.title}</h3>
+                    <h3 className="text-lg font-medium text-slate-600">{service.title}</h3>
                     <p className="mt-3 text-sm text-slate-500">{service.description}</p>
                   </div>
                 </div>
@@ -429,7 +432,7 @@ export default function Home() {
       <footer className="border-t border-accent-soft">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-3 md:flex-row md:items-center md:justify-between md:gap-4 md:py-2">
           <div>
-            <p className="text-sm font-semibold text-slate-600">The Shvitz</p>
+            <p className="text-sm font-medium text-slate-600">The Shvitz</p>
             <p className="mt-0.5 text-xs text-slate-500">Heat, cold, and calm for restoration and connection.</p>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-[0.7rem] text-slate-500">

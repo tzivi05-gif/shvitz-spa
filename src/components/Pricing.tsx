@@ -46,11 +46,11 @@ export default function Pricing({
             <ul className="mt-5 space-y-3 text-sm text-slate-600">
               <li className="flex justify-between gap-3">
                 <span>Cash or Zelle</span>
-                <span className="font-semibold text-slate-700">{formatPrice(publicEntry.cashZelle)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(publicEntry.cashZelle)}</span>
               </li>
               <li className="flex justify-between gap-3">
                 <span>Credit card</span>
-                <span className="font-semibold text-slate-700">{formatPrice(publicEntry.credit)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(publicEntry.credit)}</span>
               </li>
             </ul>
           </div>
@@ -63,11 +63,11 @@ export default function Pricing({
             <ul className="mt-5 space-y-3 text-sm text-slate-600">
               <li className="flex justify-between gap-3">
                 <span>Cash or Zelle</span>
-                <span className="font-semibold text-slate-700">{formatPrice(fridayEntry.cashZelle)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(fridayEntry.cashZelle)}</span>
               </li>
               <li className="flex justify-between gap-3">
                 <span>Credit card</span>
-                <span className="font-semibold text-slate-700">{formatPrice(fridayEntry.credit)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(fridayEntry.credit)}</span>
               </li>
             </ul>
           </div>
@@ -80,15 +80,15 @@ export default function Pricing({
             <ul className="mt-5 space-y-3 text-sm text-slate-600">
               <li className="flex justify-between gap-3">
                 <span>Couple</span>
-                <span className="font-semibold text-slate-700">{formatPrice(privateRates.couple)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(privateRates.couple)}</span>
               </li>
               <li className="flex justify-between gap-3">
                 <span>3–8 people</span>
-                <span className="font-semibold text-slate-700">{formatPrice(privateRates.group38)}</span>
+                <span className="font-medium text-slate-700">{formatPrice(privateRates.group38)}</span>
               </li>
               <li className="flex justify-between gap-3">
                 <span>Each additional guest after 8</span>
-                <span className="font-semibold text-slate-700">{formatPrice(privateRates.additionalPerPerson)}/hour</span>
+                <span className="font-medium text-slate-700">{formatPrice(privateRates.additionalPerPerson)}/hour</span>
               </li>
             </ul>
           </div>
@@ -102,7 +102,7 @@ export default function Pricing({
           <ul className="mt-5 space-y-4 text-sm text-slate-600">
             {rules.map((rule) => (
               <li key={rule.title}>
-                <span className="font-semibold text-slate-700">{rule.title}:</span> {rule.text}
+                <span className="font-medium text-slate-700">{rule.title}:</span> {rule.text}
               </li>
             ))}
           </ul>
@@ -111,7 +111,7 @@ export default function Pricing({
         {/* Zelle: QR centered + contact */}
         <div className="mt-8 flex flex-col items-center">
           <div className="rounded-2xl border border-accent-soft bg-white p-4 shadow-[0_4px_20px_rgba(45,35,31,0.06)]">
-            <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
+            <p className="text-center text-xs font-medium uppercase tracking-wider text-slate-600">
               {zelleName}
             </p>
             <p className="mt-0.5 text-center text-sm text-slate-500">({zellePhone})</p>

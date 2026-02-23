@@ -164,16 +164,16 @@ export default function FoodMenu({
                       {/* Content - compact */}
                       <div className="flex-1 min-w-0 flex flex-col">
                         {badge && (
-                          <span className="inline-flex items-center px-2 py-0.5 mb-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-accent/90 bg-accent/6 rounded border border-accent/12 w-fit">
+                          <span className="inline-flex items-center px-2 py-0.5 mb-1.5 text-[0.65rem] font-medium uppercase tracking-[0.1em] text-accent/90 bg-accent/6 rounded border border-accent/12 w-fit">
                             {badge}
                           </span>
                         )}
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="font-semibold text-slate-800 text-sm md:text-base leading-tight">
+                          <h3 className="font-medium text-slate-800 text-sm md:text-base leading-tight">
                             {cleanName}
                           </h3>
                           {!isItemWithVariations(item) && (
-                            <span className="font-bold text-accent text-sm md:text-base whitespace-nowrap flex-shrink-0">
+                            <span className="font-medium text-accent text-sm md:text-base whitespace-nowrap flex-shrink-0">
                               {formatPrice(item.price)}
                             </span>
                           )}
@@ -191,7 +191,7 @@ export default function FoodMenu({
                                 className="flex items-center justify-between gap-2"
                               >
                                 <span className="text-slate-700 text-xs font-medium">{v.label}</span>
-                                <span className="font-semibold text-accent text-xs whitespace-nowrap">
+                                <span className="font-medium text-accent text-xs whitespace-nowrap">
                                   {formatPrice(v.price)}
                                 </span>
                               </li>
@@ -223,7 +223,7 @@ export default function FoodMenu({
                     )}
                     {/* Drinks Content */}
                     <div className="flex-1 min-w-0 flex flex-col">
-                      <h3 className="font-semibold text-slate-800 text-sm md:text-base mb-1">Drinks</h3>
+                      <h3 className="font-medium text-slate-800 text-sm md:text-base mb-1">Drinks</h3>
                       <ul className="space-y-0.5">
                         {drinks.map((d) => (
                           <li 
@@ -233,7 +233,7 @@ export default function FoodMenu({
                             <span className="text-slate-700 text-xs font-medium">
                               {d.label}
                             </span>
-                            <span className="font-semibold text-accent text-xs whitespace-nowrap">
+                            <span className="font-medium text-accent text-xs whitespace-nowrap">
                               {formatPrice(d.price)}
                             </span>
                           </li>

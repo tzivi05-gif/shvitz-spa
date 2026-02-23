@@ -54,7 +54,7 @@ export default function GiveawayModal({
             </p>
           </div>
           <div className="space-y-4 rounded-3xl border border-accent-soft bg-white/90 p-6">
-            <p className="text-lg font-semibold text-slate-700">
+            <p className="text-lg font-medium text-slate-700">
               Let&apos;s get Shvitzing!
             </p>
             <p className="text-sm text-slate-600">

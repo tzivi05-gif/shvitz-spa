@@ -48,7 +48,7 @@ export default function ContactForm({
                     </div>
                     {stat.href ? (
                       <a
-                        className="text-lg font-semibold leading-snug text-slate-900 hover-text-accent"
+                        className="text-lg font-medium leading-snug text-slate-900 hover-text-accent"
                         href={stat.href}
                         target={stat.href.startsWith("http") ? "_blank" : undefined}
                         rel={stat.href.startsWith("http") ? "noreferrer" : undefined}
@@ -56,7 +56,7 @@ export default function ContactForm({
                         {stat.value}
                       </a>
                     ) : (
-                      <p className="text-lg font-semibold leading-snug text-slate-900">
+                      <p className="text-lg font-medium leading-snug text-slate-900">
                         {stat.value}
                       </p>
                     )}
@@ -88,7 +88,7 @@ export default function ContactForm({
             </div>
             <div className="surface-card mt-6 rounded-3xl border border-accent-soft p-6">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-slate-600">
+                <p className="text-sm font-medium text-slate-600">
                   The Shvitz experience
                 </p>
                 <span className="rounded-full bg-accent-soft px-3 py-1 text-[0.6rem] uppercase tracking-[0.22em] text-accent">

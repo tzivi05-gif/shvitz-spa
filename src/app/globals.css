@@ -12,7 +12,8 @@
   --accent-border: rgba(107, 135, 156, 0.35);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), "Segoe UI", system-ui, sans-serif;
+  --font-hero: var(--font-plus-jakarta), var(--font-dm-sans), sans-serif;
   --font-mono: "DM Mono", ui-monospace, monospace;
 }
 
@@ -26,7 +27,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.006em;
-  font-weight: 400;
+  font-weight: 300;
   font-optical-sizing: auto;
   font-kerning: normal;
   font-feature-settings: "kern", "liga", "calt";
@@ -37,7 +38,7 @@ body.modal-open {
 }
 
 html {
-  scroll-padding-top: 5.75rem; /* leave room for sticky header so it stays visible when scrolling to anchors */
+  scroll-padding-top: 5rem; /* leave room for sticky header so it stays visible when scrolling to anchors */
   scroll-behavior: smooth;
   scrollbar-gutter: stable; /* reserve space for scrollbar so layout doesn't jump when content loads */
 }
@@ -47,7 +48,7 @@ main {
 }
 
 section {
-  scroll-margin-top: 92px;
+  scroll-margin-top: 80px;
 }
 
 ::selection {
@@ -66,26 +67,31 @@ h3,
 h4,
 h5,
 h6 {
+  font-weight: 400;
   letter-spacing: -0.018em;
   text-wrap: balance;
 }
 
 .hero-serif {
-  font-family: var(--font-sans), "Segoe UI", system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  font-family: var(--font-hero);
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
 
 .hero-title {
   font-size: clamp(2.6rem, 5vw, 3.9rem);
-  line-height: 1.02;
-  letter-spacing: -0.028em;
+  line-height: 1.22;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  color: #675C56;
 }
 
 .hero-lead {
   font-size: clamp(1.05rem, 1.4vw, 1.25rem);
   line-height: 1.62;
   letter-spacing: 0;
+  font-weight: 400;
+  color: #7B736D;
 }
 
 .hero-image-shell {
@@ -155,12 +161,12 @@ h6 {
   font-size: 0.62rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .section-title {
   font-size: clamp(1.8rem, 2.4vw, 2.6rem);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.018em;
   position: relative;
   line-height: 1.12;
@@ -421,7 +427,7 @@ p {
 .button-primary,
 .button-secondary {
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease,
@@ -470,15 +476,15 @@ p {
   transform: translateY(-1px);
 }
 
-/* Force header to span full viewport width even inside constrained containers (e.g. preview iframe) */
+/* Fixed header so it always stays on top when scrolling; full viewport width */
 .site-header {
   box-shadow: 0 10px 26px rgba(45, 35, 31, 0.08);
   width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
 }
 
 .nav-pill a {

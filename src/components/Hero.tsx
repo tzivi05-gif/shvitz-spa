@@ -17,12 +17,12 @@ export default function Hero({ heroImage }: HeroProps) {
           <p className="text-sm uppercase tracking-[0.18em] text-accent">
             Shvitz — Monsey, NY
           </p>
-          <h1 className="hero-serif hero-title mt-6 text-slate-600">
-            <span className="block font-normal text-slate-600">
-              A Retreat into Pure Relaxation
-            </span>
+          <h1 className="hero-serif hero-title mt-6">
+            A Retreat into
+            <br />
+            Pure Relaxation
           </h1>
-          <p className="hero-lead mt-6 max-w-xl text-slate-600">
+          <p className="hero-lead mt-6 max-w-xl">
             Discover a serene retreat in the heart of Monsey. Shvitz blends
             time-honored heat therapy with modern design to restore your
             body, quiet your mind, and elevate your everyday.
@@ -58,6 +58,8 @@ export default function Hero({ heroImage }: HeroProps) {
                 className="hero-image h-[420px] w-full object-cover transition duration-700 md:h-[460px]"
                 style={{ filter: "url(#hero-sharpen)" }}
                 priority
+                loading="eager"
+                fetchPriority="high"
                 sizes="(min-width: 1280px) 520px, (min-width: 768px) 50vw, 100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-black/0 to-black/0" />

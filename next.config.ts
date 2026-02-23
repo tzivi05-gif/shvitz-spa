@@ -22,8 +22,8 @@ const nextConfig: NextConfig = {
               "form-action 'self'; " +
               "frame-ancestors 'none'; " +
               "img-src 'self' data: blob: https://api.qrserver.com https://foodish-api.com; " +
-              "font-src 'self' data:; " +
-              "style-src 'self' 'unsafe-inline'; " +
+              "font-src 'self' data: https://fonts.gstatic.com; " +
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "script-src 'self' 'unsafe-inline' https://vercel.live; " +
               "script-src-elem 'self' 'unsafe-inline' https://vercel.live; " +
               "connect-src 'self' https://vercel.live; " +
