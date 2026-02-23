@@ -1,316 +1,75 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import ContactForm, { type ContactDetail } from "../components/ContactForm";
-import FoodMenu from "../components/FoodMenu";
-import Gallery, { type GalleryItem } from "../components/Gallery";
-import Hero from "../components/Hero";
-import Pricing from "../components/Pricing";
-import WhatsAppWidget from "../components/WhatsAppWidget";
+import { contactDetails } from "@/data/contactDetails";
+import { contactEmail, contactPhone } from "@/data/contact";
+import { foodMenuDrinks, foodMenuItems } from "@/data/foodMenu";
+import { extraGallery, gallery } from "@/data/gallery";
+import { pricing } from "@/data/pricing";
+import { services, type Service } from "@/data/services";
+import ContactForm from "@/components/ContactForm";
+import FoodMenu from "@/components/FoodMenu";
+import Gallery from "@/components/Gallery";
+import Hero from "@/components/Hero";
+import Pricing from "@/components/Pricing";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { useContactForm } from "@/hooks/useContactForm";
+import { useGalleryModal } from "@/hooks/useGalleryModal";
+import { useGiveaway } from "@/hooks/useGiveaway";
+import { mobileMenuLinks, useMobileMenu } from "@/hooks/useMobileMenu";
 
-// -------------------- Data --------------------
-const services = [
-  { title: "Dry Sauna", description: "Feel tension melt away in our classic dry sauna, designed for detox, circulation, and deep relaxation." },
-  { title: "Steam Room", description: "Let aromatic steam cleanse your body and open your breath." },
-  { title: "Cold Plunge", description: "Reset your system with invigorating cold immersion therapy." },
-  { title: "Jacuzzi", description: "Soak in warmth and let stress dissolve." },
-  { title: "Lounge", description: "Unwind in a refined, comfortable space between sessions." },
-  { title: "Private Rooms", description: "Discreet, peaceful spaces for individual or small group experiences." },
-];
-
-const gallery: GalleryItem[] = [
-  { src: "/images/hot-tub-hero.png", alt: "Cozy wood-paneled spa atmosphere with warm lights." },
-  { src: "/images/shvitz-calm-2.jpg", alt: "Relaxation lounge with soft lighting." },
-  { src: "/images/stone-entry-glow.png", alt: "Stone-lined spa entry with soft glow.", cropTopLeft: true },
-  { src: "/images/shvitz-calm-4.jpg", alt: "Quiet recovery room with massage chairs." },
-];
-
-const extraGallery: GalleryItem[] = [
-  { src: "/images/shvitz-07.jpg", alt: "Fresh towel stacks by the changing area.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-08.jpg", alt: "Refreshment bar with coffee and snacks.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-09.png", alt: "Sauna heater with warm cedar seating.", modalClass: "scale-[1.04]" },
-  { src: "/images/shvitz-10.jpg", alt: "Cold plunge entry with marble walls.", modalClass: "scale-[1.04]" },
-];
-
-const pricing = {
-  publicEntry: { cashZelle: 60, credit: 65 },
-  fridayEntry: { cashZelle: 50, credit: 55 },
-  privateRates: { couple: 200, group38: 250, additionalPerPerson: 25 },
-  rules: [
-    { title: "Dressing area", text: "Please leave the dressing area neat to allow others space as well. Please put your stuff in a locker, not on the benches." },
-    { title: "Neighbors", text: "Please respect our neighbors. When outdoors at night please stay silent." },
-    { title: "Parking", text: "Please park in a way to minimize traffic. Your continued efforts will allow us to stay open." },
-  ],
-};
-
-const foodMenuItems = [
-  {
-    name: "All week: Chummus Plates",
-    description: "Comes with toasted pita.",
-    image: "/images/menu/chummus.png",
-    variations: [
-      { label: "Regular", price: 15 },
-      { label: "Shwarma", price: 20 },
-      { label: "Liver", price: 20 },
-      { label: "Pulled Beef", price: 25 },
-    ],
-  },
-  { 
-    name: "Soup of the day", 
-    price: 10,
-    image: "/images/menu/soup.png",
-  },
-  {
-    name: "Grilled Steak",
-    price: 75,
-    description: "Comes with side of fries, or mashed potatoes.",
-    image: "/images/menu/steak.png",
-  },
-  { 
-    name: "Motzei Shabbos: 12\" Sourdough Pizza", 
-    price: 25,
-    image: "/images/menu/pizza.png",
-  },
-  { 
-    name: "Thursday night: Chulent", 
-    price: 10,
-    image: "/images/menu/chulent.png",
-  },
-];
-
-const foodMenuDrinks = [
-  { label: "Cans of soda", price: 2 },
-  { label: "Bottled soda", price: 3 },
-  { label: "Beer", price: 3 },
-  { label: "Fruit Sorbet", price: 5 },
-];
-
-const contactEmail = "hello@theshvitz.com";
-const contactPhone = "845-594-9120";
-const contactLocation = "10 Sands Point Rd, Monsey, NY";
-
-const contactDetails: ContactDetail[] = [
-  {
-    label: "Location",
-    value: contactLocation,
-    href: "https://maps.google.com/?q=10%20Sands%20Point%20Rd%20Monsey%20NY",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
-        <path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" />
-        <circle cx="12" cy="10" r="2.6" />
-      </svg>
-    ),
-  },
-  {
-    label: "Phone",
-    value: contactPhone,
-    href: `tel:${contactPhone.replace(/[^0-9+]/g, "")}`,
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
-        <path d="M4.5 5.5a2 2 0 0 1 2-2h2l1.5 4-2 1.2a12.5 12.5 0 0 0 6.8 6.8l1.2-2 4 1.5v2a2 2 0 0 1-2 2A15.5 15.5 0 0 1 4.5 5.5Z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Visits",
-    value: "Individuals or groups",
-    icon: (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
-        <path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" />
-        <path d="M8 12a2.6 2.6 0 1 0-2.6-2.6A2.6 2.6 0 0 0 8 12Z" />
-        <path d="M20 19a4 4 0 0 0-8 0" />
-        <path d="M12 19a5.2 5.2 0 0 0-9.4 0" />
-      </svg>
-    ),
-  },
-];
-
-// -------------------- Component --------------------
 export default function Home() {
-  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
-  const [showGiveaway, setShowGiveaway] = useState(false);
-  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [formMessage, setFormMessage] = useState("");
-
-  // -------------------- Gallery / Giveaway Modals --------------------
-  useEffect(() => {
-    if (selectedImage) {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "Escape") setSelectedImage(null);
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
-    }
-  }, [selectedImage]);
-
-  useEffect(() => {
-    const storageKey = "shvitz-giveaway-dismissed";
-    try {
-      if (typeof window !== "undefined" && !window.localStorage.getItem(storageKey)) {
-        const timer = window.setTimeout(() => setShowGiveaway(true), 1200);
-        return () => clearTimeout(timer);
-      }
-    } catch {}
-  }, []);
-
-  const handleGiveawayClose = () => {
-    setShowGiveaway(false);
-    if (typeof window !== "undefined") {
-      try {
-        window.localStorage.setItem("shvitz-giveaway-dismissed", "true");
-      } catch {}
-    }
+  const { selectedImage, setSelectedImage, handleSelectImage } = useGalleryModal();
+  const allGalleryImages = useMemo(() => [...gallery, ...extraGallery], []);
+  const galleryIndex = selectedImage
+    ? allGalleryImages.findIndex((img) => img.src === selectedImage.src)
+    : -1;
+  const goPrev = () => {
+    if (galleryIndex <= 0) setSelectedImage(allGalleryImages[allGalleryImages.length - 1]);
+    else setSelectedImage(allGalleryImages[galleryIndex - 1]);
+  };
+  const goNext = () => {
+    if (galleryIndex >= allGalleryImages.length - 1) setSelectedImage(allGalleryImages[0]);
+    else setSelectedImage(allGalleryImages[galleryIndex + 1]);
   };
 
-  /** When modal is open, body has overflow:hidden so anchor scroll breaks. Close modal first, then scroll. */
-  const handleAnchorClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      if (!showGiveaway || !href.startsWith("#")) return;
-      e.preventDefault();
-      handleGiveawayClose();
-      const id = href.slice(1);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const el = document.getElementById(id);
-          if (el) {
-            window.history.pushState(null, "", href);
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        });
-      });
-    },
-    [showGiveaway]
-  );
-
-  // -------------------- Contact Form --------------------
-  const handleContactSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const name = String(formData.get("name") || "").trim();
-    const email = String(formData.get("email") || "").trim();
-    const treatment = String(formData.get("treatment") || "").trim();
-    const notes = String(formData.get("message") || "").trim();
-    const company = String(formData.get("company_field") || "").trim();
-
-    console.log("Form submitted:", { name, email, treatment, notes: notes.substring(0, 20) });
-
-    setFormStatus("sending");
-    setFormMessage("");
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, treatment, notes, company_field: company }),
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        const errorMessage = data?.error || `Server error (${response.status}). Please try again.`;
-        console.error("Contact form error:", errorMessage, data);
-        throw new Error(errorMessage);
-      }
-
-      setFormStatus("success");
-      setFormMessage("Thanks! We will reach out shortly.");
-      form.reset();
-    } catch (error) {
-      console.error("Contact form submission failed:", error);
-      setFormStatus("error");
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      setFormMessage(`Error: ${errorMessage}. Please call ${contactPhone} or email ${contactEmail}.`);
-    }
-  };
-
-  // -------------------- Displayed Gallery --------------------
-  const contactPhoneDial = contactPhone.replace(/[^0-9+]/g, "");
-  const whatsappLink = `https://wa.me/${contactPhoneDial.replace("+", "")}`;
-  const handleSelectImage = useCallback((image: GalleryItem) => {
-    setSelectedImage(image);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, []);
-
-  // -------------------- Mobile menu — fixed overlay via portal so it’s never clipped --------------------
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuOpenedAtRef = useRef<number>(0);
-  const menuPanelRef = useRef<HTMLElement | null>(null);
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-
-  // Lock body scroll only for gallery lightbox, mobile menu, or booking popups
-  const isModalOpen = !!selectedImage || menuOpen || formStatus === "success" || formStatus === "error";
   useEffect(() => {
-    document.body.classList.toggle("modal-open", isModalOpen);
-  }, [isModalOpen]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
+    if (!selectedImage) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeMenu();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [menuOpen, closeMenu]);
-
-  const closeBookingSuccessPopup = useCallback(() => {
-    setFormStatus("idle");
-    setFormMessage("");
-  }, []);
-
-  const closeBookingErrorPopup = useCallback(() => {
-    setFormStatus("idle");
-    setFormMessage("");
-  }, []);
-
-  useEffect(() => {
-    if (formStatus !== "success" && formStatus !== "error") return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeBookingSuccessPopup();
-        closeBookingErrorPopup();
+      if (e.key === "ArrowLeft") {
+        goPrev();
+        e.preventDefault();
+      } else if (e.key === "ArrowRight") {
+        goNext();
+        e.preventDefault();
       }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [formStatus, closeBookingSuccessPopup, closeBookingErrorPopup]);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedImage, galleryIndex]);
 
-  // Native click listener on hamburger so menu opens even if React synthetic events don't fire
-  useEffect(() => {
-    const btn = menuButtonRef.current;
-    if (!btn) return;
-    const handleClick = () => {
-      setMenuOpen((prev) => {
-        if (!prev) menuOpenedAtRef.current = Date.now();
-        return !prev;
-      });
-    };
-    btn.addEventListener("click", handleClick);
-    return () => btn.removeEventListener("click", handleClick);
-  }, []);
+  useGiveaway();
+  const { formState, handleContactSubmit, closeBookingSuccessPopup, closeBookingErrorPopup } =
+    useContactForm({ contactPhone, contactEmail });
+  const {
+    menuOpen,
+    closeMenu,
+    handleBackdropClick,
+    menuButtonRef,
+    menuPanelRef,
+  } = useMobileMenu();
 
-  // Only close from backdrop if menu has been open long enough (stops opening click from closing)
-  const handleBackdropClick = useCallback(() => {
-    if (Date.now() - menuOpenedAtRef.current < 150) return;
-    closeMenu();
-  }, [closeMenu]);
-
-  const mobileMenuLinks = [
-    { id: "top", label: "Home" },
-    { id: "contact", label: "Contact" },
-    { id: "pricing", label: "Pricing" },
-    { id: "experience", label: "Experience" },
-    { id: "menu", label: "Menu" },
-  ];
+  const isModalOpen =
+    !!selectedImage ||
+    menuOpen ||
+    formState.status === "success" ||
+    formState.status === "error";
+  useBodyScrollLock(isModalOpen);
 
   return (
-    <div className="bg-[#F8F1E9] text-[#2B211C]">
+    <div className="min-w-full w-full bg-[#F8F1E9] text-[#2B211C] overflow-x-hidden">
       <span id="top" className="block h-0 w-0" />
 
       {/* Header — z-[200] so it stays above menu overlay and any modals; hamburger/close always clickable */}
@@ -355,7 +114,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Mobile menu overlay — portal so it’s never clipped; backdrop below header (z-[90]) */}
+      {/* Mobile menu overlay — portal so it's never clipped; backdrop below header (z-[90]) */}
       {menuOpen && (
         <div
             className="fixed inset-0 z-[150] lg:hidden"
@@ -410,7 +169,7 @@ export default function Home() {
       )}
 
       {/* Booking success popup */}
-      {formStatus === "success" && (
+      {formState.status === "success" && (
         <div
           className="fixed inset-0 z-[110] flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
           role="dialog"
@@ -442,7 +201,7 @@ export default function Home() {
       )}
 
       {/* Booking error popup */}
-      {formStatus === "error" && (
+      {formState.status === "error" && (
         <div
           className="fixed inset-0 z-[110] flex items-center justify-center bg-[#2B211C]/55 px-6 py-10"
           role="dialog"
@@ -467,60 +226,121 @@ export default function Home() {
               Unable to send your request
             </p>
             <p className="mt-2 text-sm text-slate-600">
-              {formMessage}
+              {formState.message}
             </p>
+          </div>
+        </div>
+      )}
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[170] flex flex-col items-center justify-center overflow-hidden p-3 pb-6"
+          aria-modal="true"
+          aria-label="Image lightbox — view gallery photo full size"
+          onDoubleClick={() => setSelectedImage(null)}
+        >
+          {/* Backdrop — click anywhere outside the picture to close */}
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setSelectedImage(null)}
+            aria-hidden="true"
+          />
+          {/* Content — stop propagation so clicking the picture/controls doesn't close */}
+          <div
+            className="relative z-10 flex flex-col items-center max-w-[85vw]"
+            onClick={(e) => e.stopPropagation()}
+          >
+          {/* Close */}
+          <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-end pointer-events-none">
+            <button
+              type="button"
+              onClick={() => setSelectedImage(null)}
+              className="pointer-events-auto rounded-full bg-white px-4 py-2 text-xs uppercase tracking-[0.14em] text-black hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              aria-label="Close"
+            >
+              Close
+            </button>
+          </div>
+
+          {/* Prev/Next buttons — positioned outside the image */}
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous image"
+            className="absolute left-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 -translate-x-full -ml-6 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next image"
+            className="absolute right-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 translate-x-full -mr-6 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Main image — sized to fit viewport without scroll */}
+          <div className="flex w-full flex-shrink-0 items-center justify-center pt-24 pb-2">
+            <div className="relative h-[50vh] w-full max-w-[85vw]">
+              <Image
+                src={selectedImage.src}
+                alt={selectedImage.alt}
+                fill
+                className="object-contain object-center"
+                sizes="90vw"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Counter */}
+          <p className="flex-shrink-0 text-center text-xs uppercase tracking-wider text-white/90 mt-1">
+            {galleryIndex + 1} of {allGalleryImages.length}
+          </p>
+
+          {/* Thumbnails — centered strip below image */}
+          <div className="flex flex-shrink-0 w-full max-w-3xl justify-center overflow-x-auto mt-2 mb-1 scrollbar-thin mx-auto">
+            <div className="flex gap-1.5">
+              {allGalleryImages.map((img, i) => (
+                <button
+                  key={`${img.src}-${i}`}
+                  type="button"
+                  onClick={() => setSelectedImage(img)}
+                  aria-label={`View image ${i + 1}`}
+                  aria-current={i === galleryIndex ? "true" : undefined}
+                  className={`relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border-2 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer ${
+                    i === galleryIndex
+                      ? "border-white ring-2 ring-white/40 opacity-100"
+                      : "border-white/20 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <Image
+                    src={img.src}
+                    alt=""
+                    fill
+                    className="object-cover object-center"
+                    sizes="48px"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Caption */}
+          <p className="flex-shrink-0 max-w-xl text-center text-[0.65rem] uppercase tracking-[0.14em] text-white/80 mt-1 mb-3">
+            {selectedImage.alt}
+          </p>
           </div>
         </div>
       )}
 
       {/* Main Content */}
       <main>
-        {selectedImage && (
-          <section className="section-block pb-0">
-            <div className="section-shell mx-auto w-full max-w-6xl">
-              <div className="surface-card relative overflow-hidden rounded-[2.5rem] border border-accent-soft bg-white/80 p-4 shadow-[0_20px_55px_rgba(53,66,77,0.12)] sm:p-6">
-                <button
-                  type="button"
-                  onClick={() => setSelectedImage(null)}
-                  className="absolute right-4 top-4 z-10 rounded-full border border-accent bg-white px-3 py-1 text-xs uppercase tracking-[0.14em] text-[#2B211C] hover-border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  Close
-                </button>
-                <div className="overflow-hidden rounded-[2rem]">
-                  {selectedImage.cropTopLeft ? (
-                    <div className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh]">
-                      <Image
-                        key={selectedImage.src}
-                        src={selectedImage.src}
-                        alt={selectedImage.alt}
-                        width={1600}
-                        height={1000}
-                        className="absolute left-0 top-0 object-cover object-left-top"
-                        style={{ width: "320%", height: "320%", objectFit: "cover", objectPosition: "0 0" }}
-                        sizes="100vw"
-                        priority
-                      />
-                    </div>
-                  ) : (
-                    <Image
-                      key={selectedImage.src}
-                      src={selectedImage.src}
-                      alt={selectedImage.alt}
-                      width={1600}
-                      height={1000}
-                      className="h-[50vh] w-full object-cover sm:h-[60vh]"
-                      sizes="100vw"
-                      priority
-                    />
-                  )}
-                </div>
-                <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
-                  {selectedImage.alt}
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
         <div className="water-background">
           <Hero heroImage={gallery[0]} />
         </div>
@@ -533,7 +353,7 @@ export default function Home() {
                 Embrace the quiet luxury of Shvitz, a space designed for deep relaxation and renewal. Every detail is intentional, from the warmth of our saunas to the peaceful flow of our interiors.
               </p>
               <p className="section-body">
-                Whether you arrive alone or with friends, you’ll find a calm refuge where the noise of daily life fades and balance returns naturally.
+                Whether you arrive alone or with friends, you'll find a calm refuge where the noise of daily life fades and balance returns naturally.
               </p>
             </div>
           </div>
@@ -544,10 +364,25 @@ export default function Home() {
             <p className="section-label">Amenities</p>
             <p className="section-body section-subtitle max-w-md mt-2">A full circuit of heat, cold, and calm for restoration.</p>
             <div className="section-grid mt-12 grid gap-6 md:grid-cols-2">
-              {services.map((service) => (
-                <div key={service.title} className="surface-card rounded-3xl border border-accent-soft p-6">
-                  <h3 className="text-lg font-semibold text-slate-600">{service.title}</h3>
-                  <p className="mt-3 text-sm text-slate-500">{service.description}</p>
+              {services.map((service: Service) => (
+                <div key={service.title} className="surface-card flex gap-4 rounded-3xl border border-accent-soft p-6">
+                  {service.image && (
+                    <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-accent-soft">
+                      <Image
+                        src={service.image}
+                        alt=""
+                        width={96}
+                        height={80}
+                        className="h-full w-full object-cover"
+                        style={service.imagePosition ? { objectPosition: service.imagePosition } : undefined}
+                        sizes="96px"
+                      />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-semibold text-slate-600">{service.title}</h3>
+                    <p className="mt-3 text-sm text-slate-500">{service.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -577,8 +412,8 @@ export default function Home() {
           contactDetails={contactDetails}
           contactPhone={contactPhone}
           contactEmail={contactEmail}
-          formStatus={formStatus}
-          formMessage={formMessage}
+          formStatus={formState.status}
+          formMessage={formState.message}
           onSubmit={handleContactSubmit}
         />
       </main>

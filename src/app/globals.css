@@ -1,22 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F9F4EE;
-  --foreground: #2F2622;
-  --accent: #6F8AA1;
-  --accent-soft: rgba(111, 138, 161, 0.18);
-  --accent-border: rgba(111, 138, 161, 0.32);
+  --background: #1a1816;
+  --foreground: #e8e2da;
+  --surface: #252220;
+  --surface-elevated: #2d2a28;
+  --accent: #6B879C;
+  --accent-glow: #7F96AA;
+  --accent-warm: #c9a86c;
+  --accent-soft: rgba(107, 135, 156, 0.2);
+  --accent-border: rgba(107, 135, 156, 0.35);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #F7F1EA;
-    --foreground: #2D241F;
-  }
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
 }
 
 body {
@@ -103,19 +100,21 @@ h6 {
 
 .section-block {
   position: relative;
-  border-top: 1px solid rgba(111, 138, 161, 0.22);
+  border-top: 1px solid rgba(107, 135, 156, 0.12);
 }
 
+/* Ambient strip lighting (ceiling-line glow) */
 .section-block::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(111, 138, 161, 0.45), transparent);
-  opacity: 0.75;
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 108, 0.4), rgba(107, 135, 156, 0.35), rgba(201, 168, 108, 0.4), transparent);
+  opacity: 0.9;
   pointer-events: none;
+  box-shadow: 0 0 12px rgba(107, 135, 156, 0.15);
 }
 
 .section-block::after {
@@ -124,13 +123,13 @@ h6 {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.25;
+  opacity: 0.35;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.5), transparent 45%),
-    radial-gradient(circle at 80% 30%, rgba(214, 184, 160, 0.18), transparent 55%),
-    radial-gradient(circle at 40% 85%, rgba(100, 122, 141, 0.16), transparent 55%);
-  background-size: 60% 60%, 70% 70%, 65% 65%;
-  background-position: 0% 0%, 100% 10%, 40% 100%;
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(107, 135, 156, 0.06), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(201, 168, 108, 0.05), transparent 45%),
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(43, 33, 28, 0.08), transparent 55%);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+  background-position: 0% 0%, 0% 0%, 0% 0%;
 }
 
 .section-block > * {
@@ -173,11 +172,11 @@ h6 {
   width: 72px;
   height: 1px;
   margin-top: 0.7rem;
-  background: linear-gradient(90deg, rgba(111, 130, 147, 0.8), transparent);
+  background: linear-gradient(90deg, rgba(107, 135, 156, 0.7), transparent);
 }
 
 .section-body {
-  color: #7A6B62;
+  color: #a89f96;
   font-size: clamp(0.98rem, 0.7vw + 0.65rem, 1.08rem);
   line-height: 1.7;
   letter-spacing: -0.003em;
@@ -206,7 +205,6 @@ p {
   inset: -20%;
   z-index: 0;
   background-repeat: no-repeat;
-  opacity: 0.22;
   pointer-events: none;
   animation: none;
 }
@@ -215,36 +213,36 @@ p {
   background-image:
     linear-gradient(
       180deg,
-      rgba(248, 241, 233, 0.6) 0%,
-      rgba(248, 241, 233, 0.35) 45%,
-      rgba(248, 241, 233, 0.12) 100%
+      rgba(26, 24, 22, 0.4) 0%,
+      rgba(26, 24, 22, 0.15) 45%,
+      transparent 100%
     ),
     radial-gradient(
-      circle at 50% 45%,
-      rgba(255, 255, 255, 0.5) 0%,
-      rgba(248, 241, 233, 0.18) 50%,
-      rgba(248, 241, 233, 0) 78%
+      ellipse 80% 60% at 50% 30%,
+      rgba(107, 135, 156, 0.12) 0%,
+      rgba(127, 150, 170, 0.05) 40%,
+      transparent 70%
     ),
     radial-gradient(
-      circle at 50% 55%,
-      rgba(43, 33, 28, 0.12) 0%,
-      rgba(43, 33, 28, 0.05) 45%,
-      rgba(43, 33, 28, 0) 80%
+      circle at 70% 70%,
+      rgba(201, 168, 108, 0.08) 0%,
+      transparent 50%
     );
-  background-size: cover, 150% 150%, 170% 170%;
+  background-size: cover, 150% 150%, 120% 120%;
   background-position: center, center, center;
-  opacity: 0.22;
-  filter: blur(2px) saturate(1.01);
+  opacity: 1;
+  filter: blur(0);
 }
 
 .water-background::after {
   background-image:
-    radial-gradient(circle at 10% 80%, rgba(255, 255, 255, 0.5), transparent 45%),
-    radial-gradient(circle at 90% 60%, rgba(150, 210, 235, 0.35), transparent 40%);
+    radial-gradient(circle at 20% 80%, rgba(107, 135, 156, 0.06), transparent 45%),
+    radial-gradient(circle at 90% 50%, rgba(201, 168, 108, 0.05), transparent 40%);
   background-size: 60% 60%, 70% 70%;
   background-position: 20% 80%, 90% 40%;
   mix-blend-mode: screen;
-  filter: blur(6px);
+  filter: blur(8px);
+  opacity: 0.8;
 }
 
 .water-background > * {
@@ -472,8 +470,15 @@ p {
   transform: translateY(-1px);
 }
 
+/* Force header to span full viewport width even inside constrained containers (e.g. preview iframe) */
 .site-header {
   box-shadow: 0 10px 26px rgba(45, 35, 31, 0.08);
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
 .nav-pill a {
@@ -511,7 +516,7 @@ p {
 
 .select-field {
   appearance: none;
-  background-color: var(--background);
+  background-color: #FFFBF7;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%236F8AA1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
@@ -521,8 +526,8 @@ p {
 
 .select-field option {
   font: inherit;
-  color: var(--foreground);
-  background-color: var(--background);
+  color: #2B211C;
+  background-color: #FFFBF7;
 }
 
 .honeypot {

@@ -1,20 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Plus_Jakarta_Sans({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const geistMono = DM_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500"],
-});
 
 export const metadata: Metadata = {
   title: "Shvitz — Monsey",
@@ -56,9 +41,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

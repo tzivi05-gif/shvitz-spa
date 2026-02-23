@@ -1,3 +1,4 @@
+import { parseContactPayload } from "@/lib/contactSchema";
 import { Resend } from "resend";
 
 const resendApiKey = process.env.RESEND_API_KEY;
@@ -7,15 +8,17 @@ const contactFrom = process.env.CONTACT_FROM || fallbackFrom;
 const fromAddress =
   process.env.NODE_ENV === "production" ? contactFrom : fallbackFrom;
 
-const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
-const MAX_NAME_LENGTH = 100;
-const MAX_EMAIL_LENGTH = 254;
-const MAX_TREATMENT_LENGTH = 60;
-const MAX_NOTES_LENGTH = 2000;
-const MAX_COMPANY_LENGTH = 120;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function jsonSuccess() {
+  return Response.json({ success: true });
+}
+
+function jsonError(message: string, status: number) {
+  return Response.json({ success: false, error: message }, { status });
+}
 
 const getClientIp = (request: Request) => {
   const forwarded = request.headers.get("x-forwarded-for");
@@ -38,6 +41,7 @@ const isRateLimited = (key: string) => {
   bucket.count += 1;
   return false;
 };
+
 const escapeHtml = (value: string) =>
   value
     .replaceAll("&", "&amp;")
@@ -46,6 +50,19 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
+/** Map Zod validation failure to existing user-facing API messages. */
+function validationErrorMessage(
+  parseResult: { success: false; error: { issues: Array<{ path: Array<unknown> }> } }
+): string {
+  const first = parseResult.error.issues[0];
+  const pathKey = first?.path?.[0];
+  const path = typeof pathKey === "string" ? pathKey : undefined;
+  if (path === "name" || path === "email") {
+    return "Please provide a valid name and email.";
+  }
+  return "Please shorten one or more fields and try again.";
+}
+
 export async function handleContactPost(request: Request): Promise<Response> {
   if (!resendApiKey || !contactTo) {
     console.error("Email service not configured:", {
@@ -53,65 +70,35 @@ export async function handleContactPost(request: Request): Promise<Response> {
       hasContactTo: !!contactTo,
       contactToValue: contactTo,
     });
-    return Response.json(
-      { error: "Email service is not configured." },
-      { status: 500 }
-    );
+    return jsonError("Email service is not configured.", 500);
   }
 
   const clientKey = getClientIp(request);
   if (isRateLimited(clientKey)) {
-    return Response.json(
-      { error: "Too many requests. Please try again soon." },
-      { status: 429 }
-    );
+    return jsonError("Too many requests. Please try again soon.", 429);
   }
 
-  const payload = await request.json().catch(() => null);
-  const name = String(payload?.name || "").trim();
-  const email = String(payload?.email || "").trim();
-  const treatment = String(payload?.treatment || "").trim();
-  const notes = String(payload?.notes || "").trim();
-  const company = String(
-    payload?.company_field || payload?.company || ""
-  ).trim();
+  const raw = await request.json().catch(() => null);
+  const parsed = parseContactPayload(raw);
+
+  if (!parsed.success) {
+    return jsonError(validationErrorMessage(parsed), 400);
+  }
+
+  const { name, email, treatment, notes, company_field: company } = parsed.data;
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safeTreatment = escapeHtml(treatment || "Not specified");
   const safeNotes = escapeHtml(notes || "Not provided");
 
-  if (!name || !email || !isValidEmail(email)) {
-    return Response.json(
-      { error: "Please provide a valid name and email." },
-      { status: 400 }
-    );
-  }
-
-  if (
-    name.length > MAX_NAME_LENGTH ||
-    email.length > MAX_EMAIL_LENGTH ||
-    treatment.length > MAX_TREATMENT_LENGTH ||
-    notes.length > MAX_NOTES_LENGTH ||
-    company.length > MAX_COMPANY_LENGTH
-  ) {
-    return Response.json(
-      { error: "Please shorten one or more fields and try again." },
-      { status: 400 }
-    );
-  }
-
   if (company) {
-    return Response.json({ ok: true });
+    return jsonSuccess();
   }
 
-  // Must await so the email is sent before the handler exits (Render/Vercel kill the process after response)
   const resend = new Resend(resendApiKey);
   const toAddress = contactTo.trim();
   if (!toAddress) {
-    return Response.json(
-      { error: "Email service is not configured." },
-      { status: 500 }
-    );
+    return jsonError("Email service is not configured.", 500);
   }
 
   try {
@@ -145,20 +132,17 @@ export async function handleContactPost(request: Request): Promise<Response> {
     const resultError = (result as { error?: { message?: string } })?.error;
     if (resultError) {
       console.error("Resend send failed:", resultError.message ?? result);
-      return Response.json(
-        { error: `Unable to send your request: ${resultError.message || "Unknown error"}` },
-        { status: 500 }
+      return jsonError(
+        `Unable to send your request: ${resultError.message || "Unknown error"}`,
+        500
       );
     }
 
     console.log("Email sent successfully to:", toAddress);
-    return Response.json({ ok: true });
+    return jsonSuccess();
   } catch (error) {
     console.error("Resend send failed with exception:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return Response.json(
-      { error: `Unable to send your request: ${errorMessage}` },
-      { status: 500 }
-    );
+    return jsonError(`Unable to send your request: ${errorMessage}`, 500);
   }
 }

@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "export": "next build",
-    "lint": "eslint"
+    "dev": "npx next dev",
+    "build": "npx next build",
+    "start": "npx next start",
+    "export": "npx next build",
+    "lint": "npx eslint"
   },
   "dependencies": {
     "@prisma/client": "^7.3.0",
@@ -15,7 +15,8 @@
     "prisma": "^7.3.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "resend": "^6.9.1"
+    "resend": "^6.9.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -25,6 +26,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
+    "sharp": "^0.33.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

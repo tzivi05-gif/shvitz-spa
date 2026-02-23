@@ -110,7 +110,7 @@ export default function Pricing({
 
         {/* Zelle: QR centered + contact */}
         <div className="mt-8 flex flex-col items-center">
-          <div className="rounded-2xl border border-accent-soft bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-accent-soft bg-white p-4 shadow-[0_4px_20px_rgba(45,35,31,0.06)]">
             <p className="text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
               {zelleName}
             </p>
