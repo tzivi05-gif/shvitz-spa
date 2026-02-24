@@ -121,7 +121,7 @@ export default function FoodMenu({
 }: FoodMenuProps) {
   return (
     <section id="menu" className="section-block relative">
-      <div className="section-shell mx-auto w-full max-w-3xl relative z-10" style={{ paddingBottom: 0 }}>
+      <div className="section-shell mx-auto w-full max-w-3xl relative z-10 pb-14 md:pb-16">
         <div className="flex items-center gap-3 mb-5">
           <p className="section-label bg-accent/10 border border-accent/20">Food &amp; drink</p>
         </div>
