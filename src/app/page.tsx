@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { contactDetails } from "@/data/contactDetails";
 import { contactEmail, contactPhone } from "@/data/contact";
@@ -72,7 +73,8 @@ export default function Home() {
     <div className="min-w-full w-full bg-[#F8F1E9] text-[#2B211C] overflow-x-hidden">
       <span id="top" className="block h-0 w-0" />
 
-      {/* Header — fixed so it stays on top when scrolling; z-[200] above menu overlay and modals */}
+      {/* Header — fixed so it stays on top when scrolling; z-[200] above menu overlay and modals; hidden when gallery lightbox is open */}
+      {!selectedImage && (
       <header className="site-header border-b border-accent-soft bg-[#F8F1E9] backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
@@ -113,6 +115,7 @@ export default function Home() {
           </div>
         </div>
       </header>
+      )}
 
       {/* Spacer so content is not hidden under the fixed header (matches header height) */}
       <div className="h-20" aria-hidden="true" />
@@ -235,6 +238,39 @@ export default function Home() {
         </div>
       )}
 
+      {selectedImage &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goPrev();
+              }}
+              aria-label="Previous image"
+              className="fixed left-4 top-1/2 z-[180] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goNext();
+              }}
+              aria-label="Next image"
+              className="fixed right-4 top-1/2 z-[180] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </>,
+          document.body
+        )}
       {selectedImage && (
         <div
           className="fixed inset-0 z-[170] flex flex-col items-center justify-center overflow-hidden p-3 pb-6"
@@ -264,28 +300,6 @@ export default function Home() {
               Close
             </button>
           </div>
-
-          {/* Prev/Next buttons — positioned outside the image */}
-          <button
-            type="button"
-            onClick={goPrev}
-            aria-label="Previous image"
-            className="absolute left-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 -translate-x-full -ml-6 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={goNext}
-            aria-label="Next image"
-            className="absolute right-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 translate-x-full -mr-6 items-center justify-center rounded-full border border-white/30 bg-white/70 text-black shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
 
           {/* Main image — sized to fit viewport without scroll */}
           <div className="flex w-full flex-shrink-0 items-center justify-center pt-24 pb-2">
