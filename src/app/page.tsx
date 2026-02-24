@@ -365,7 +365,7 @@ export default function Home() {
         <section id="about" className="section-block">
           <div className="section-shell mx-auto w-full max-w-6xl">
             <p className="section-label">About</p>
-            <h2 className="section-title mt-4 text-slate-600">Unwind in Stillness</h2>
+            <h2 className="section-title mt-4 text-slate-800">Unwind in Stillness</h2>
             <div className="mt-10 grid gap-6 text-base text-slate-500 lg:grid-cols-2">
               <p className="section-body">
                 Embrace the quiet luxury of Shvitz, a space designed for deep relaxation and renewal. Every detail is intentional, from the warmth of our saunas to the peaceful flow of our interiors.

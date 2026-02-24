@@ -347,16 +347,29 @@ p {
   opacity: 0;
 }
 
+/* Warm earth-tone overrides so all text fits the cream/brown palette */
 .text-slate-900 {
+  color: #4A4039;
+}
+
+.text-slate-800 {
+  color: #5C5149;
+}
+
+.text-slate-700 {
   color: #6D5F56;
 }
 
 .text-slate-600 {
-  color: #6D5F56;
+  color: #756960;
 }
 
 .text-slate-500 {
   color: #8A7A70;
+}
+
+.text-slate-400 {
+  color: #9A8F86;
 }
 
 .text-accent {
