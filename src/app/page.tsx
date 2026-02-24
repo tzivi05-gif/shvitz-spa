@@ -78,9 +78,10 @@ export default function Home() {
       <header className="site-header border-b border-accent-soft bg-[#F8F1E9] backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
           <a
-            className="text-sm font-medium tracking-[0.18em] text-accent hover-text-accent"
+            className="flex items-center gap-2 text-sm font-medium tracking-[0.18em] text-accent hover-text-accent"
             href="#top"
           >
+            <span className="material-symbols-outlined -mt-0.5 text-[1.25rem]" aria-hidden>spa</span>
             THE SHVITZ
           </a>
           <nav aria-label="Primary" className="nav-pill hidden items-center gap-8 rounded-full border border-accent-soft bg-[#F4EFE7] px-6 py-3 text-xs uppercase tracking-[0.14em] text-[#6F6056] shadow-[0_10px_30px_rgba(43,33,28,0.08)] lg:flex">
