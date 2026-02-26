@@ -11,5 +11,4 @@ export const services: Service[] = [
   { title: "Cold Plunge", description: "Reset your system with invigorating cold immersion therapy.", image: "/images/cold-plunge.png" },
   { title: "Jacuzzi", description: "Soak in warmth and let stress dissolve.", image: "/images/hot-tub-hero.png" },
   { title: "Lounge", description: "Unwind in a refined, comfortable space between sessions.", image: "/images/shvitz-calm-2.jpg" },
-  { title: "Private Rooms", description: "Discreet, peaceful spaces for individual or small group experiences.", image: "/images/shvitz-calm-4.jpg" },
 ];

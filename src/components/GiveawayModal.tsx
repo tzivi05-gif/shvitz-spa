@@ -61,7 +61,7 @@ export default function GiveawayModal({
               Call us: {contactPhone}
             </p>
             <p className="text-sm text-slate-600">
-              {contactLocation} 10952
+              {contactLocation}
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a

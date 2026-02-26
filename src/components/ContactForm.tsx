@@ -65,25 +65,13 @@ export default function ContactForm({
               </div>
             </div>
             <div className="surface-card mt-6 rounded-3xl border border-accent-soft p-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <p className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-[0.58rem] uppercase tracking-[0.24em] text-accent">
-                    Hours
-                  </p>
-                  <p className="mt-3 text-sm text-slate-900">
-                    Sun–Thu: 8am–10pm
-                  </p>
-                  <p className="mt-1 text-sm text-slate-900">Fri: 8am–2pm</p>
-                  <p className="mt-1 text-sm text-slate-900">Sat: Closed</p>
-                </div>
-                <div>
-                  <p className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-[0.58rem] uppercase tracking-[0.24em] text-accent">
-                    Parking
-                  </p>
-                  <p className="mt-3 text-sm text-slate-900">
-                    On-site and street parking available.
-                  </p>
-                </div>
+              <div>
+                <p className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-[0.58rem] uppercase tracking-[0.24em] text-accent">
+                  Parking
+                </p>
+                <p className="mt-3 text-sm text-slate-900">
+                  On-site and street parking available.
+                </p>
               </div>
             </div>
             <div className="surface-card mt-6 rounded-3xl border border-accent-soft p-6">

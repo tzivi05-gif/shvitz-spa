@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
+import { siteConfig, localKeywords } from "@/data/seo";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -16,36 +17,35 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["300", "400"],
 });
 
+const metaTitle = `${siteConfig.spaNameShort} — ${siteConfig.city} | ${siteConfig.spaName} Day Spa`;
+const metaDescription = `${siteConfig.spaName} in ${siteConfig.city}, ${siteConfig.state}: a serene day spa blending heat therapy, steam, and cold plunge. Book your session for relaxation and recovery.`;
+
 export const metadata: Metadata = {
-  title: "Shvitz — Monsey",
-  description:
-    "Discover a serene retreat in Monsey. Shvitz blends time-honored heat therapy with modern design to restore your body, quiet your mind, and elevate your everyday.",
-  keywords: [
-    "Shvitz",
-    "sauna",
-    "steam room",
-    "cold plunge",
-    "Monsey",
-    "spa",
-    "wellness",
-    "recovery",
-  ],
+  title: {
+    default: metaTitle,
+    template: `%s | ${siteConfig.spaName}`,
+  },
+  description: metaDescription,
+  keywords: localKeywords,
   openGraph: {
-    title: "Shvitz — Monsey",
-    description:
-      "Discover a serene retreat in Monsey. Shvitz blends time-honored heat therapy with modern design to restore your body, quiet your mind, and elevate your everyday.",
+    title: metaTitle,
+    description: metaDescription,
     type: "website",
     locale: "en_US",
+    url: siteConfig.website,
+    siteName: siteConfig.spaName,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shvitz — Monsey",
-    description:
-      "Discover a serene retreat in Monsey. Shvitz blends time-honored heat therapy with modern design to restore your body, quiet your mind, and elevate your everyday.",
+    title: metaTitle,
+    description: metaDescription,
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: siteConfig.website,
   },
 };
 
@@ -75,16 +75,16 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "DaySpa",
-              name: "Shvitz",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "10 Sands Point Rd",
-                addressLocality: "Monsey",
-                addressRegion: "NY",
-                postalCode: "10952",
-                addressCountry: "US",
-              },
-              telephone: "+1-845-594-9120",
+              "@id": `${siteConfig.website}/#organization`,
+              name: siteConfig.spaName,
+              description: metaDescription,
+              url: siteConfig.website,
+              telephone: `+1-${siteConfig.phone.replace(/\D/g, "")}`,
+              address: undefined,
+              geo: undefined,
+              openingHoursSpecification: undefined,
+              priceRange: "$$",
+              image: undefined,
             }),
           }}
         />

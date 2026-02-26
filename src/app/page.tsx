@@ -381,11 +381,14 @@ export default function Home() {
           <div className="section-shell mx-auto w-full max-w-6xl">
             <p className="section-label">Amenities</p>
             <p className="section-body section-subtitle max-w-md mt-2">A full circuit of heat, cold, and calm for restoration.</p>
-            <div className="section-grid mt-12 grid gap-6 md:grid-cols-2">
+            <div className="section-grid mt-12 flex flex-wrap justify-center gap-6">
               {services.map((service: Service) => (
-                <div key={service.title} className="surface-card flex gap-4 rounded-3xl border border-accent-soft p-6">
+                <div
+                  key={service.title}
+                  className="surface-card flex min-h-[140px] w-full min-w-[260px] max-w-[340px] basis-full gap-4 rounded-3xl border border-accent-soft p-6 md:h-[200px] md:min-h-[200px] md:w-[320px] md:max-w-[320px] md:flex-[0_0_320px]"
+                >
                   {service.image && (
-                    <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-accent-soft">
+                    <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-accent-soft md:h-full md:min-h-0">
                       <Image
                         src={service.image}
                         alt=""
@@ -397,9 +400,9 @@ export default function Home() {
                       />
                     </div>
                   )}
-                  <div className="min-w-0 flex-1">
+                  <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
                     <h3 className="text-lg font-medium text-slate-600">{service.title}</h3>
-                    <p className="mt-3 text-sm text-slate-500">{service.description}</p>
+                    <p className="mt-3 line-clamp-3 text-sm text-slate-500">{service.description}</p>
                   </div>
                 </div>
               ))}
@@ -422,9 +425,6 @@ export default function Home() {
           items={foodMenuItems}
           drinks={foodMenuDrinks}
           drinksImage="/images/menu/drinks.png"
-          chefSignature="By Chef Shloimy Friedlander"
-          contactAddress="10 Sands Point Rd, Monsey, NY 10952"
-          contactPhone={contactPhone}
         />
         <ContactForm
           contactDetails={contactDetails}

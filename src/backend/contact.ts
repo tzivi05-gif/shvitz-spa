@@ -4,9 +4,8 @@ import { Resend } from "resend";
 const resendApiKey = process.env.RESEND_API_KEY;
 const contactTo = process.env.CONTACT_TO;
 const fallbackFrom = "Shvitz <onboarding@resend.dev>";
-const contactFrom = process.env.CONTACT_FROM || fallbackFrom;
-const fromAddress =
-  process.env.NODE_ENV === "production" ? contactFrom : fallbackFrom;
+const contactFrom = process.env.CONTACT_FROM?.trim() || fallbackFrom;
+const fromAddress = contactFrom;
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
