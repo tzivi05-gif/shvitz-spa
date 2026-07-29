@@ -2,10 +2,10 @@ import { parseContactPayload } from "@/lib/contactSchema";
 import { Resend } from "resend";
 
 const resendApiKey = process.env.RESEND_API_KEY;
-const contactTo = process.env.CONTACT_TO;
-const fallbackFrom = "Shvitz <onboarding@resend.dev>";
-const contactFrom = process.env.CONTACT_FROM?.trim() || fallbackFrom;
-const fromAddress = contactFrom;
+/** Hardcoded so a bad/missing Vercel env var can never redirect mail to another inbox. */
+const CONTACT_TO_ADDRESS = "theshvitzspa@gmail.com";
+/** Verified domain sender — never use onboarding@resend.dev (it only delivers to the Resend account email). */
+const CONTACT_FROM_ADDRESS = "noreply@theshvitz.com";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -63,12 +63,8 @@ function validationErrorMessage(
 }
 
 export async function handleContactPost(request: Request): Promise<Response> {
-  if (!resendApiKey || !contactTo) {
-    console.error("Email service not configured:", {
-      hasResendKey: !!resendApiKey,
-      hasContactTo: !!contactTo,
-      contactToValue: contactTo,
-    });
+  if (!resendApiKey) {
+    console.error("Email service not configured: missing RESEND_API_KEY");
     return jsonError("Email service is not configured.", 500);
   }
 
@@ -95,10 +91,8 @@ export async function handleContactPost(request: Request): Promise<Response> {
   }
 
   const resend = new Resend(resendApiKey);
-  const toAddress = contactTo.trim();
-  if (!toAddress) {
-    return jsonError("Email service is not configured.", 500);
-  }
+  const toAddress = CONTACT_TO_ADDRESS;
+  const fromAddress = CONTACT_FROM_ADDRESS;
 
   try {
     console.log("Attempting to send email:", {
