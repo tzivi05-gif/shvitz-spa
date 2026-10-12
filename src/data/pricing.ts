@@ -1,5 +1,5 @@
 export const pricing = {
-  publicEntry: { cashZelle: 60, credit: 65 },
+  publicEntry: { cashZelle: 75, credit: 80 },
   fridayEntry: { cashZelle: 50, credit: 55 },
   privateRates: { couple: 200, group38: 250, additionalPerPerson: 25 },
   rules: [
