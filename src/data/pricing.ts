@@ -1,6 +1,6 @@
 export const pricing = {
-  publicEntry: { cashZelle: 75, credit: 80 },
-  fridayEntry: { cashZelle: 50, credit: 55 },
+  publicEntry: { cashZelle: 75, credit: 75 },
+  fridayEntry: { cashZelle: 75, credit: 75 },
   privateRates: { couple: 200, group38: 250, additionalPerPerson: 25 },
   rules: [
     { title: "Dressing area", text: "Please leave the dressing area neat to allow others space as well. Please put your stuff in a locker, not on the benches." },
