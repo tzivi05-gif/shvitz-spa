@@ -10,7 +10,7 @@ export default function Hero({ heroImage }: HeroProps) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.92),transparent_60%)]" />
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-6 py-10 md:py-14 lg:grid-cols-2 lg:gap-12">
         <div className="relative z-10">
-          <p className="text-xs uppercase tracking-[0.18em] text-accent">Sauna &amp; cold plunge · Monsey, NY</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-accent">A heimishe men’s spa · Monsey, NY</p>
           <h1 className="hero-serif hero-title mt-4">Your time<br />to unwind.</h1>
           <p className="hero-lead mt-5 max-w-xl">Saunas, steam, a cold plunge, and a place to relax with friends. Take a break at The Shvitz.</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-700">

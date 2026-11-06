@@ -1,4 +1,5 @@
 export const visitorFaqs = [
+  { question: "What kind of spa is The Shvitz?", answer: "The Shvitz is a heimishe men’s spa in Monsey, New York, with dry and wet saunas, a cold plunge, Jacuzzi and lounge. Public hours are for men ages 18 and over." },
   { question: "Who are public hours for?", answer: "Public hours at The Shvitz are for men ages 18 and over. Contact us separately about private booking availability." },
   { question: "Where is The Shvitz?", answer: "The Shvitz is in Monsey, New York, in Rockland County. Contact us by WhatsApp or phone for directions before your visit." },
   { question: "How much is public entry?", answer: "Public entry is $75, including Friday entry. Cash, Zelle and credit card entry rates are currently the same. Private group rates are listed separately." },

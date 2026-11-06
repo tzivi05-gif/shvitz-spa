@@ -19,8 +19,8 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["300", "400"],
 });
 
-const metaTitle = `Men’s Sauna & Cold Plunge in Monsey | The Shvitz`;
-const metaDescription = "The Shvitz in Monsey, Rockland County: dry and wet saunas, cold plunge, Jacuzzi and lounge. $75 public entry for men 18+. Contact us for current hours.";
+const metaTitle = `Heimishe Men’s Spa in Monsey | The Shvitz`;
+const metaDescription = "The Shvitz is a heimishe men’s spa in Monsey, NY, with dry and wet saunas, cold plunge, Jacuzzi and lounge. $75 public entry for men 18+. Ask for current hours.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.website),

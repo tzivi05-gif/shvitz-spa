@@ -370,7 +370,7 @@ export default function Home() {
             <h2 className="section-title mt-4 text-slate-800">Unwind in Stillness</h2>
             <div className="mt-10 grid gap-6 text-base text-slate-500 lg:grid-cols-2">
               <p className="section-body">
-                The Shvitz is a sauna and relaxation space in Monsey, New York, welcoming visitors from Rockland County and nearby communities. Public hours are for men ages 18 and over.
+                The Shvitz is a heimishe men’s spa in Monsey, New York, welcoming visitors from Rockland County and nearby communities. Public hours are for men ages 18 and over.
               </p>
               <p className="section-body">
                 Enjoy our dry sauna, wet sauna, cold plunge, Jacuzzi and lounge at your own pace. The outdoor pool is seasonal. Contact us for current public hours or to discuss a private group booking.

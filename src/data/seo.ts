@@ -21,6 +21,8 @@ export const siteConfig = {
 export const localKeywords = [
   siteConfig.spaNameShort,
   "shvitz",
+  "heimishe men’s spa",
+  "heimishe spa Monsey",
   "sauna",
   "steam room",
   "cold plunge",
