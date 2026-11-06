@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "npx next dev",
-    "build": "npx next build",
+    "build": "npx next build --webpack",
     "start": "npx next start",
-    "export": "npx next build",
+    "export": "npx next build --webpack",
     "lint": "npx eslint"
   },
   "dependencies": {

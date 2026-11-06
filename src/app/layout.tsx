@@ -80,11 +80,11 @@ export default function RootLayout({
               description: metaDescription,
               url: siteConfig.website,
               telephone: `+1-${siteConfig.phone.replace(/\D/g, "")}`,
-              address: undefined,
+              address: { "@type": "PostalAddress", streetAddress: siteConfig.streetAddress, addressLocality: siteConfig.city, addressRegion: siteConfig.state, postalCode: siteConfig.postalCode, addressCountry: "US" },
               geo: undefined,
               openingHoursSpecification: undefined,
               priceRange: "$$",
-              image: undefined,
+              image: `${siteConfig.website}/images/shvitz-calm-1.jpg`,
             }),
           }}
         />

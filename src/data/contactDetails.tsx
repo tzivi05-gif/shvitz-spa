@@ -1,10 +1,11 @@
 import type { ContactDetail } from "@/components/ContactForm";
-import { contactLocation, contactPhone } from "./contact";
+import { contactLocation, contactPhone, directionsUrl } from "./contact";
 
 export const contactDetails: ContactDetail[] = [
   {
     label: "Location",
     value: contactLocation,
+    href: directionsUrl,
     icon: (
       <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
         <path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" />

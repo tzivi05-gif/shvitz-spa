@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { contactDetails } from "@/data/contactDetails";
-import { contactEmail, contactPhone } from "@/data/contact";
+import { contactEmail, contactPhone, contactLocation, directionsUrl } from "@/data/contact";
 import { foodMenuDrinks, foodMenuItems } from "@/data/foodMenu";
 import { extraGallery, gallery } from "@/data/gallery";
 import { pricing } from "@/data/pricing";
@@ -448,7 +448,7 @@ export default function Home() {
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-6 py-3 md:flex-row md:items-center md:justify-between md:gap-4 md:py-2">
           <div>
             <p className="text-sm font-medium text-slate-600">The Shvitz</p>
-            <p className="mt-0.5 text-xs text-slate-500">Heat, cold, and calm for restoration and connection.</p>
+            <a className="mt-1 block text-xs text-slate-500 underline underline-offset-4" href={directionsUrl} target="_blank" rel="noopener noreferrer">{contactLocation}</a>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-1 text-[0.7rem] text-slate-500">
             {["about", "services", "experience", "pricing", "menu", "contact"].map((id) => (

@@ -32,7 +32,7 @@ export default function Gallery({
           <p className="section-label">Gallery</p>
         </div>
 
-        <div className="section-grid mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="section-grid mt-7 grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
           {images.map((image, index) => {
             const { src, alt } = image;
 
@@ -42,7 +42,7 @@ export default function Gallery({
                 type="button"
                 onClick={() => onSelectImage(image)}
                 aria-label={alt}
-                className="surface-card gallery-card group relative aspect-square overflow-hidden rounded-3xl border border-white/70 ring-1 ring-accent-soft transition-all duration-300 hover:shadow-[0_18px_50px_rgba(53,66,77,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="surface-card gallery-card group relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/70 ring-1 ring-accent-soft transition-all duration-300 hover:shadow-[0_18px_50px_rgba(53,66,77,0.14)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 {/* Stable square container for next/image fill */}
                 <div className="relative size-full overflow-hidden transition-transform duration-300 ease-out group-hover:scale-105">
@@ -50,8 +50,8 @@ export default function Gallery({
                     src={src}
                     alt={alt}
                     fill
-                    className="object-cover object-[center_55%]"
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover object-center"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
                   />
                 </div>
 
