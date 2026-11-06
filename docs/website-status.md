@@ -19,3 +19,6 @@ $75 entry, 845-594-9120, Monsey, NY. Current regular hours were not supplied; th
 
 ## Privacy update
 Street address, directions links and personal payment name removed from public UI, metadata and payment QR display at owner request. Location shows Monsey, NY only.
+
+## Owner-supplied cold plunge photo
+Replaced the incorrect cold-plunge photograph in the amenities and gallery with the photo supplied by the owner. The earlier visual identification was wrong.
