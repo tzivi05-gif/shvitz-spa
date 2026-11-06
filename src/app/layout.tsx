@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans, Plus_Jakarta_Sans } from "next/font/google";
 import { siteConfig, localKeywords } from "@/data/seo";
 import "./globals.css";
+import SiteAnalytics from "@/components/SiteAnalytics";
+import { amenities } from "@/data/amenities";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,10 +19,11 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["300", "400"],
 });
 
-const metaTitle = `${siteConfig.spaNameShort} — ${siteConfig.city} | ${siteConfig.spaName} Day Spa`;
-const metaDescription = `${siteConfig.spaName} in ${siteConfig.city}, ${siteConfig.state}: a serene day spa blending heat therapy, steam, and cold plunge. Book your session for relaxation and recovery.`;
+const metaTitle = `Men’s Sauna & Cold Plunge in Monsey | The Shvitz`;
+const metaDescription = "The Shvitz in Monsey, Rockland County: dry and wet saunas, cold plunge, Jacuzzi and lounge. $75 public entry for men 18+. Contact us for current hours.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.website),
   title: {
     default: metaTitle,
     template: `%s | ${siteConfig.spaName}`,
@@ -34,6 +37,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteConfig.website,
     siteName: siteConfig.spaName,
+    images: [{ url: "/images/shvitz-01.jpg", width: 1200, height: 900, alt: "The Shvitz lounge in Monsey" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -79,7 +83,11 @@ export default function RootLayout({
               name: siteConfig.spaName,
               description: metaDescription,
               url: siteConfig.website,
-              telephone: `+1-${siteConfig.phone.replace(/\D/g, "")}`,
+              telephone: `+1${siteConfig.phone.replace(/\D/g, "")}`,
+              areaServed: [{ "@type": "City", name: "Monsey", containedInPlace: { "@type": "AdministrativeArea", name: "Rockland County, New York" } }],
+              knowsAbout: amenities.map(a => a.title),
+              hasOfferCatalog: { "@type": "OfferCatalog", name: "The Shvitz amenities", itemListElement: amenities.map(a => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: a.title, description: a.intro, url: `${siteConfig.website}/amenities/${a.slug}`, provider: { "@id": `${siteConfig.website}/#organization` } } })) },
+              makesOffer: { "@type": "Offer", name: "Public entry for men ages 18+", price: "75", priceCurrency: "USD", url: `${siteConfig.website}/#pricing`, description: "Public hours are for men ages 18 and over. Contact for current hours." },
               address: undefined,
               geo: undefined,
               openingHoursSpecification: undefined,
@@ -89,6 +97,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        <SiteAnalytics />
       </body>
     </html>
   );

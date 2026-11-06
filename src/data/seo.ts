@@ -14,7 +14,7 @@ export const siteConfig = {
   /** Full phone, display format (e.g. "845-594-9120") */
   phone: "845-594-9120",
   /** Canonical website URL (e.g. "https://theshvitz.com") */
-  website: "https://theshvitz.com",
+  website: "https://www.theshvitz.com",
 } as const;
 
 /** Local SEO keywords derived from config */

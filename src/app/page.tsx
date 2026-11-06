@@ -14,6 +14,7 @@ import ContactForm from "@/components/ContactForm";
 import FoodMenu from "@/components/FoodMenu";
 import Gallery from "@/components/Gallery";
 import Hero from "@/components/Hero";
+import VisitorFaqs from "@/components/VisitorFaqs";
 import Pricing from "@/components/Pricing";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
@@ -369,10 +370,10 @@ export default function Home() {
             <h2 className="section-title mt-4 text-slate-800">Unwind in Stillness</h2>
             <div className="mt-10 grid gap-6 text-base text-slate-500 lg:grid-cols-2">
               <p className="section-body">
-                Embrace the quiet luxury of Shvitz, a space designed for deep relaxation and renewal. Every detail is intentional, from the warmth of our saunas to the peaceful flow of our interiors.
+                The Shvitz is a sauna and relaxation space in Monsey, New York, welcoming visitors from Rockland County and nearby communities. Public hours are for men ages 18 and over.
               </p>
               <p className="section-body">
-                Whether you arrive alone or with friends, you'll find a calm refuge where the noise of daily life fades and balance returns naturally.
+                Enjoy our dry sauna, wet sauna, cold plunge, Jacuzzi and lounge at your own pace. The outdoor pool is seasonal. Contact us for current public hours or to discuss a private group booking.
               </p>
             </div>
           </div>
@@ -429,6 +430,7 @@ export default function Home() {
           drinks={foodMenuDrinks}
           drinksImage="/images/menu/drinks.png"
         />
+        <VisitorFaqs />
         <ContactForm
           contactDetails={contactDetails}
           contactPhone={contactPhone}

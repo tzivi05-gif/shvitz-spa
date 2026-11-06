@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = amenities.find(a => a.slug === slug);
   if (!item) return {};
   const url = `${siteConfig.website}/amenities/${slug}`;
-  return { title: `${item.title}: Benefits & What to Expect`, description: item.intro,
+  return { title: `${item.title} in Monsey: Benefits & What to Expect`, description: `Explore ${item.title.toLowerCase()} at The Shvitz in Monsey, NY. Learn what to expect, possible benefits and practical precautions. Public hours for men 18+.`,
     alternates: { canonical: url }, openGraph: { title: `${item.title} at The Shvitz`, description: item.intro, url,
       ...(item.image ? { images: [{ url: `${siteConfig.website}${item.image}`, alt: item.imageAlt }] } : {}) },
     twitter: { title: `${item.title} at The Shvitz`, description: item.intro } };
