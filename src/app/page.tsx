@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import Link from "next/link";
 import { contactDetails } from "@/data/contactDetails";
 import { contactEmail, contactPhone, contactLocation } from "@/data/contact";
 import { foodMenuDrinks, foodMenuItems } from "@/data/foodMenu";
@@ -383,12 +384,13 @@ export default function Home() {
             <p className="section-body section-subtitle max-w-md mt-2">A full circuit of heat, cold, and calm for restoration.</p>
             <div className="section-grid mt-12 flex flex-wrap justify-center gap-6">
               {services.map((service: Service) => (
-                <div
+                <Link
+                  href={`/amenities/${service.slug}`}
                   key={service.title}
-                  className="surface-card flex min-h-[140px] w-full min-w-[260px] max-w-[340px] basis-full gap-4 rounded-3xl border border-accent-soft p-6 md:h-[200px] md:min-h-[200px] md:w-[320px] md:max-w-[320px] md:flex-[0_0_320px]"
+                  className="surface-card flex min-h-[140px] w-full min-w-[260px] max-w-[340px] basis-full gap-4 rounded-3xl border border-accent-soft p-6 md:min-h-[200px] md:w-[320px] md:max-w-[320px] md:flex-[0_0_320px]"
                 >
                   {service.image && (
-                    <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-accent-soft md:h-full md:min-h-0">
+                    <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-accent-soft md:h-28 md:min-h-0">
                       <Image
                         src={service.image}
                         alt=""
@@ -402,9 +404,10 @@ export default function Home() {
                   )}
                   <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
                     <h3 className="text-lg font-medium text-slate-600">{service.title}</h3>
-                    <p className="mt-3 line-clamp-3 text-sm text-slate-500">{service.description}</p>
+                    <p className="mt-3 text-sm text-slate-500">{service.description}</p>
+                    <span className="mt-4 inline-block text-xs text-accent underline underline-offset-4">Benefits &amp; what to expect →</span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

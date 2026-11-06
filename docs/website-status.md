@@ -22,3 +22,6 @@ Street address, directions links and personal payment name removed from public U
 
 ## Owner-supplied cold plunge photo
 Replaced the incorrect cold-plunge photograph in the amenities and gallery with the photo supplied by the owner. The earlier visual identification was wrong.
+
+## Amenity guides
+Added /amenities and six linked detail pages: dry sauna, wet sauna, cold plunge, Jacuzzi, lounge and seasonal outdoor pool. Each explains the experience, possible benefits, practical use, precautions and evidence limits with source links. Owner-supplied plunge photo retained; no address or personal name reintroduced. Production build, TypeScript, generated-page and independent source checks passed before publication.
