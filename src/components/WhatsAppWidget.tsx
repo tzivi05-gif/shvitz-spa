@@ -6,8 +6,9 @@ type WhatsAppWidgetProps = {
 };
 
 export default function WhatsAppWidget({ phoneNumber, message = "Hello! I'd like to learn more about The Shvitz." }: WhatsAppWidgetProps) {
-  // Format phone number for WhatsApp (remove all non-numeric characters except +)
-  const formattedPhone = phoneNumber.replace(/[^0-9+]/g, "");
+  // WhatsApp requires an international number, including the US country code.
+  const digits = phoneNumber.replace(/\D/g, "");
+  const formattedPhone = digits.length === 10 ? `1${digits}` : digits;
   const whatsappUrl = `https://wa.me/${formattedPhone.replace("+", "")}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
 
   return (
