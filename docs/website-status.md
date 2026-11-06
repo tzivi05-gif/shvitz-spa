@@ -25,3 +25,5 @@ Replaced the incorrect cold-plunge photograph in the amenities and gallery with 
 
 ## Amenity guides
 Added /amenities and six linked detail pages: dry sauna, wet sauna, cold plunge, Jacuzzi, lounge and seasonal outdoor pool. Each explains the experience, possible benefits, practical use, precautions and evidence limits with source links. Owner-supplied plunge photo retained; no address or personal name reintroduced. Production build, TypeScript, generated-page and independent source checks passed before publication.
+
+Public-hours policy: men ages 18+ only, stated prominently by the entry price, in pricing/contact and on all amenity pages. Private availability is handled by inquiry.

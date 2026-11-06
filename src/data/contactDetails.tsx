@@ -23,8 +23,8 @@ export const contactDetails: ContactDetail[] = [
     ),
   },
   {
-    label: "Visits",
-    value: "Individuals or groups",
+    label: "Public hours",
+    value: "Men ages 18+ only",
     icon: (
       <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
         <path d="M16 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3Z" />

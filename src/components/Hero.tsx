@@ -15,7 +15,7 @@ export default function Hero({ heroImage }: HeroProps) {
           <p className="hero-lead mt-5 max-w-xl">Saunas, steam, a cold plunge, and a place to relax with friends. Take a break at The Shvitz.</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-700">
             <strong className="text-xl font-medium">${pricing.publicEntry.cashZelle} entry</strong>
-            <span>Adults 18+</span>
+            <span>Public hours: men ages 18+</span>
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <a className="button-primary text-sm" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp us</a>

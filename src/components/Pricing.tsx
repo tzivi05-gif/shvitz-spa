@@ -29,7 +29,7 @@ export default function Pricing({
         <p className="section-label">Pricing</p>
         <h2 className="section-title mt-4 text-slate-600">Rates &amp; Info</h2>
         <p className="section-body section-subtitle mt-2 max-w-lg">
-          Public entry, Friday rates, and private groups.
+          Public hours are for men ages 18 and over. Contact us about private bookings.
         </p>
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
