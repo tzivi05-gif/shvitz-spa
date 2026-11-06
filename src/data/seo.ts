@@ -13,11 +13,6 @@ export const siteConfig = {
   state: "NY",
   /** Full phone, display format (e.g. "845-594-9120") */
   phone: "845-594-9120",
-  /** Full street address (e.g. "10 Sands Point Rd, Monsey, NY 10952") */
-  address: "10 Sands Point Rd, Monsey, NY 10952",
-  /** Street only for schema (e.g. "10 Sands Point Rd") */
-  streetAddress: "10 Sands Point Rd",
-  postalCode: "10952",
   /** Canonical website URL (e.g. "https://theshvitz.com") */
   website: "https://theshvitz.com",
 } as const;

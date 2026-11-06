@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { contactLocation, contactPhone, directionsUrl, whatsappUrl } from "@/data/contact";
+import { contactLocation, contactPhone, whatsappUrl } from "@/data/contact";
 import { pricing } from "@/data/pricing";
 
 type HeroProps = { heroImage: { src: string; alt: string } };
@@ -21,7 +21,7 @@ export default function Hero({ heroImage }: HeroProps) {
             <a className="button-primary text-sm" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp us</a>
             <a className="button-secondary text-sm text-accent" href={`tel:+1${contactPhone.replace(/\D/g, "")}`}>Call {contactPhone}</a>
           </div>
-          <a className="mt-5 inline-block text-sm leading-relaxed text-slate-600 underline underline-offset-4" href={directionsUrl} target="_blank" rel="noopener noreferrer">{contactLocation} ↗</a>
+          <p className="mt-5 text-sm text-slate-600">{contactLocation}</p>
           <p className="mt-3 text-sm leading-relaxed text-slate-500">Message us for today’s hours and private group availability.</p>
           <a className="mt-4 inline-block text-xs uppercase tracking-[0.12em] text-accent underline underline-offset-4" href="#experience">Explore the photos</a>
         </div>

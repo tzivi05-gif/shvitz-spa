@@ -1,4 +1,3 @@
-import Image from "next/image";
 
 export type PricingRule = {
   title: string;
@@ -10,8 +9,6 @@ type PricingProps = {
   fridayEntry: { cashZelle: number; credit: number };
   privateRates: { couple: number; group38: number; additionalPerPerson: number };
   rules: PricingRule[];
-  zelleQrImageSrc?: string;
-  zelleName?: string;
   zellePhone?: string;
 };
 
@@ -24,8 +21,6 @@ export default function Pricing({
   fridayEntry,
   privateRates,
   rules,
-  zelleQrImageSrc,
-  zelleName = "Joshua Friedmann",
   zellePhone = "845-594-9120",
 }: PricingProps) {
   return (
@@ -110,31 +105,6 @@ export default function Pricing({
 
         {/* Zelle: QR centered + contact */}
         <div className="mt-8 flex flex-col items-center">
-          <div className="rounded-2xl border border-accent-soft bg-white p-4 shadow-[0_4px_20px_rgba(45,35,31,0.06)]">
-            <p className="text-center text-xs font-medium uppercase tracking-wider text-slate-600">
-              {zelleName}
-            </p>
-            <p className="mt-0.5 text-center text-sm text-slate-500">({zellePhone})</p>
-            <div className="relative mt-3 aspect-square w-40">
-              {zelleQrImageSrc ? (
-                <Image
-                  src={zelleQrImageSrc}
-                  alt="Zelle QR code for payments"
-                  width={160}
-                  height={160}
-                  className="rounded-lg object-contain"
-                />
-              ) : (
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(`Zelle: ${zelleName} ${zellePhone}`)}`}
-                  alt="Zelle QR code for payments"
-                  width={160}
-                  height={160}
-                  className="rounded-lg object-contain"
-                />
-              )}
-            </div>
-          </div>
           <a
             className="button-secondary mt-4 inline-flex text-xs uppercase tracking-[0.14em] text-accent"
             href="#contact"
@@ -142,7 +112,7 @@ export default function Pricing({
             Request availability
           </a>
           <p className="mt-4 max-w-md text-center text-sm text-slate-500">
-            Zelle: {zellePhone} ({zelleName}). For WhatsApp, private bookings, or customer service, contact us at:{" "}
+            Zelle: {zellePhone}. For WhatsApp, private bookings, or customer service, contact us at:{" "}
             <a href="https://wa.me/18455949120" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
               {zellePhone}
             </a>

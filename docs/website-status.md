@@ -15,4 +15,7 @@
 - Publish through tzivi05-gif/shvitz-spa main, preserving existing Vercel domain. Confirm new live content and build status after push.
 
 ## Operating details
-$75 entry, 845-594-9120, 10 Sands Point Rd, Monsey NY 10952. Current regular hours were not supplied; the site directs visitors to ask. No new booking/payment service or automatic external outreach was created.
+$75 entry, 845-594-9120, Monsey, NY. Current regular hours were not supplied; the site directs visitors to ask. No new booking/payment service or automatic external outreach was created.
+
+## Privacy update
+Street address, directions links and personal payment name removed from public UI, metadata and payment QR display at owner request. Location shows Monsey, NY only.

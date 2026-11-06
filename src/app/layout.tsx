@@ -80,7 +80,7 @@ export default function RootLayout({
               description: metaDescription,
               url: siteConfig.website,
               telephone: `+1-${siteConfig.phone.replace(/\D/g, "")}`,
-              address: { "@type": "PostalAddress", streetAddress: siteConfig.streetAddress, addressLocality: siteConfig.city, addressRegion: siteConfig.state, postalCode: siteConfig.postalCode, addressCountry: "US" },
+              address: undefined,
               geo: undefined,
               openingHoursSpecification: undefined,
               priceRange: "$$",
